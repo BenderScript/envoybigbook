@@ -29,13 +29,14 @@ static_resources:
                           route:
                             cluster: simple-server
                 http_filters:
-                  - name: envoy.router
-                    typed_config: {}
+                  # https://www.envoyproxy.io/docs/envoy/latest/api-v2/config/filter/http/ext_authz/v2/ext_authz.proto#envoy-api-msg-config-filter-http-ext-authz-v2-extauthz
                   - name: envoy.ext_authz
                     config:
+                      failure_mode_allow: false
                       grpc_service:
                         envoy_grpc:
-                          cluster_name: extauth
+                          cluster_name: ext-authz
+                  - name: envoy.router
 
   clusters:
     - name: simple-server
@@ -46,14 +47,21 @@ static_resources:
         - socket_address:
             address: "host.docker.internal"
             port_value: 5000
-    - name: extauth
-      connect_timeout: 0.25s
+    - name: ext-authz
       type: STRICT_DNS
-      lb_policy: round_robin
-      hosts:
-        - socket_address:
-            address: "host.docker.internal"
-            port_value: 5010
+      http2_protocol_options: {}
+      load_assignment:
+        cluster_name: ext-authz
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: "host.docker.internal"
+                      port_value: 5010
+      # This timeout controls the initial TCP handshake timeout - not the timeout for the
+      # entire request.
+      connect_timeout: 0.25s
 
 admin:
   access_log_path: "/dev/null"

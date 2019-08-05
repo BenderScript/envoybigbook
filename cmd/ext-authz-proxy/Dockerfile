@@ -1,6 +1,6 @@
-FROM envoyproxy/envoy:v1.9.0
+FROM envoyproxy/envoy:v1.11.0
 
-EXPOSE 5010
+EXPOSE 4999
 EXPOSE 19000
 
 ADD ext-authz-envoy.yaml /etc/ext-authz-envoy.yaml

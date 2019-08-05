@@ -20,6 +20,8 @@ type AuthorizationServer struct{}
 
 // inject a header that can be used for future rate limiting
 func (a *AuthorizationServer) Check(ctx context.Context, req *auth.CheckRequest) (*auth.CheckResponse, error) {
+	println(req)
+	println("Got here")
 	authHeader, ok := req.Attributes.Request.Http.Headers["authorization"]
 	var splitToken []string
 	if ok {
