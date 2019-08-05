@@ -11,6 +11,7 @@ import (
 	"github.com/envoyproxy/go-control-plane/envoy/api/v2/core"
 	auth "github.com/envoyproxy/go-control-plane/envoy/service/auth/v2"
 	envoytype "github.com/envoyproxy/go-control-plane/envoy/type"
+	"github.com/golang/protobuf/jsonpb"
 	"google.golang.org/grpc"
 	rpc "istio.io/gogo-genproto/googleapis/google/rpc"
 )
@@ -20,9 +21,13 @@ type AuthorizationServer struct{}
 
 // inject a header that can be used for future rate limiting
 func (a *AuthorizationServer) Check(ctx context.Context, req *auth.CheckRequest) (*auth.CheckResponse, error) {
-	println(req)
-	println("Got here")
+
 	authHeader, ok := req.Attributes.Request.Http.Headers["authorization"]
+	httpRequest := req.Attributes.Request.Http
+	marshaler := jsonpb.Marshaler{}
+	jsonString, _ := marshaler.MarshalToString(httpRequest)
+	println(jsonString)
+
 	var splitToken []string
 	if ok {
 		splitToken = strings.Split(authHeader, "Bearer ")
