@@ -7,13 +7,13 @@ In this example of we run a Envoy Proxy on that listens on port 4999 and redirec
 Build the envoy container:
 
 ```
-docker build -t service-envoy .
+docker build -t simple-proxy .
 ``` 
 
 Run the container:
 
 ```
-docker run -d -p 4999:4999 -p 19000:19000 service-envoy
+docker run -d -p 4999:4999 -p 19000:19000 simple-proxy
 ```
 
 Without a web server a request would look like this:
@@ -37,6 +37,7 @@ curl -v http://localhost:4999/
 <
 * Connection #0 to host localhost left intact
 ```
+
 
 
 
