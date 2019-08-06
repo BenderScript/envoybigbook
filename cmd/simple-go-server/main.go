@@ -87,12 +87,27 @@ func main() {
 	logger.Println("Server stopped")
 }
 
+func printHeaders(r *http.Request) {
+	// Loop over header names
+	println()
+	println("HTTP Headers Received:")
+	println("======================")
+	for name, values := range r.Header {
+		// Loop over all values for the name.
+		for _, value := range values {
+			fmt.Printf("%-40s: %s\n", name, value)
+		}
+	}
+	println()
+}
+
 func index() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/" {
 			http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 			return
 		}
+		printHeaders(r)
 		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 		w.Header().Set("X-Content-Type-Options", "nosniff")
 		w.WriteHeader(http.StatusOK)
