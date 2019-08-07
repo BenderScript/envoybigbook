@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"log"
 	"net"
 
@@ -21,32 +23,43 @@ func (a *AuthorizationServer) Check(ctx context.Context, req *auth.CheckRequest)
 	httpRequest := req.Attributes.Request.Http
 	marshaler := jsonpb.Marshaler{}
 	jsonString, _ := marshaler.MarshalToString(httpRequest)
-	println(jsonString)
+	var out bytes.Buffer
+	err := json.Indent(&out, []byte(jsonString), "", "  ")
+	if err != nil {
+		println(out.String())
 
-	return &auth.CheckResponse{
-		Status: &rpc.Status{
-			Code: int32(rpc.OK),
-		},
-		HttpResponse: &auth.CheckResponse_OkResponse{
-			OkResponse: &auth.OkHttpResponse{
-				// https://www.envoyproxy.io/docs/envoy/latest/api-v2/service/auth/v2/external_auth.proto#service-auth-v2-checkrequest
-				Headers: []*core.HeaderValueOption{
-					{
-						Header: &core.HeaderValue{
-							Key:   "x-ext-auth-id",
-							Value: "curl",
+		return &auth.CheckResponse{
+			Status: &rpc.Status{
+				Code: int32(rpc.OK),
+			},
+			HttpResponse: &auth.CheckResponse_OkResponse{
+				OkResponse: &auth.OkHttpResponse{
+					// https://www.envoyproxy.io/docs/envoy/latest/api-v2/service/auth/v2/external_auth.proto#service-auth-v2-checkrequest
+					Headers: []*core.HeaderValueOption{
+						{
+							Header: &core.HeaderValue{
+								Key:   "x-ext-auth-id",
+								Value: "curl",
+							},
 						},
-					},
-					{
-						Header: &core.HeaderValue{
-							Key:   "x-ext-auth-id-user",
-							Value: "bob",
+						{
+							Header: &core.HeaderValue{
+								Key:   "x-ext-auth-id-user",
+								Value: "bob",
+							},
 						},
 					},
 				},
 			},
-		},
-	}, nil
+		}, nil
+	} else {
+		return &auth.CheckResponse{
+			Status: &rpc.Status{
+				Code: int32(rpc.PERMISSION_DENIED),
+			},
+			HttpResponse: &auth.CheckResponse_DeniedResponse{},
+		}, nil
+	}
 }
 
 func main() {
