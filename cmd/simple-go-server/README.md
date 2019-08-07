@@ -14,7 +14,7 @@ Run the server:
 ./identity
 ```
 
-Then we install an IPtables rule to redirect port 49999 to 5000
+Then we install an IPtables rule to redirect port 4999 to 5000
 
 ```
 iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 4999 -j REDIRECT --to-port 5000
@@ -23,7 +23,7 @@ iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 4999 -j REDIRECT --to-port 
 Test to see if everything is working
 
 ```
-curl http://54.219.164.237:4999/
+curl http://"$HOST":4999/
 Hello, World!
 ```
 
