@@ -2,6 +2,7 @@ FROM envoyproxy/envoy:v1.11.0
 
 EXPOSE 4999
 EXPOSE 19000
+EXPOSE 8443
 
 ADD ./service-envoy.yaml /etc/service-envoy.yaml
 ADD ./start_envoy.sh /usr/local/bin/start_envoy.sh
