@@ -86,6 +86,7 @@ sudo ip rule add fwmark 0x1 lookup 100
 sudo ip route add local 0.0.0.0/0 dev lo table 100
 
 # Verify new rules & route
+# ip route show table 100
 
 #ubuntu:~$ ip rule list
 #0:	from all lookup local
@@ -120,4 +121,6 @@ sudo ip route add local 0.0.0.0/0 dev lo table 100
 #local fe80::40:ff:fe46:51d3 dev eth0 table local proto kernel metric 0 pref medium
 #ff00::/8 dev eth0 table local metric 256 pref medium
 
-# sudo iptables -t mangle -A PREROUTING -p tcp --dport 80 -j TPROXY --tproxy-mark 0x1/0x1 --on-port 4999
+sudo sysctl -w net.ipv4.conf.all.route_localnet=1
+
+sudo iptables -t mangle -A PREROUTING -p tcp --dport 80 -j TPROXY --tproxy-mark 0x1/0x1 --on-port 4999
