@@ -3,13 +3,14 @@ node:
   cluster: "cluster_identity"
 static_resources:
   listeners:
+#   - use_original_dst: true
     - transparent: true
     - address:
         socket_address:
           address: 0.0.0.0
           port_value: 4999
-      listener_filters:
-        name: envoy.listener.original_dst
+#      listener_filters:
+#        name: envoy.listener.original_dst
       filter_chains:
         - filters:
             - name: envoy.http_connection_manager
