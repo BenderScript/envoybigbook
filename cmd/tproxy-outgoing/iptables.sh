@@ -15,7 +15,7 @@ ls /lib/modules/"$MACHINE"/kernel/net/netfilter/ | grep TPROXY
 
 # check if module could be loaded
 
-sudo modprobe -v -n xt_TPROX
+sudo modprobe -v -n xt_TPROXY
 
 # Is module already loaded
 
@@ -82,8 +82,8 @@ sudo iptables -t mangle -A DIVERT -j ACCEPT
 
 
 # new rule & route for marked
-sudo ip rule add fwmark 7 lookup 123
-sudo ip route add local 0.0.0.0/0 dev lo table 123
+sudo ip rule add fwmark 7 lookup 100
+sudo ip route add local 0.0.0.0/0 dev lo table 100
 
 # Verify new rules & route
 
