@@ -3,8 +3,6 @@ node:
   cluster: "cluster_identity"
 static_resources:
   listeners:
-#   - use_original_dst: true
-    - transparent: true
     - address:
         socket_address:
           address: 0.0.0.0
@@ -24,29 +22,30 @@ static_resources:
                   name: local_route
                   virtual_hosts:
                     - name: local_service
-                      domains: ["*"]
+                      domains:
+                        - "*"
                       routes:
                         - match:
                             prefix: "/"
                           route:
-                            cluster: original_destination
+                            cluster: cluster1
                 http_filters:
                   - name: envoy.router
                     typed_config: {}
-    listener_filters:
-      - name: envoy.listener.original_dst
-        typed_config: {}
-
+      listener_filters:
+        - name: envoy.listener.original_dst
+          typed_config: {}
   clusters:
-    - name: original_destination
-      connect_timeout: 6s
+    - name: cluster1
       type: ORIGINAL_DST
+      connect_timeout: 6s
       lb_policy: ORIGINAL_DST_LB
       dns_lookup_family: V4_ONLY
-
+cluster_manager: {}
+watchdog: {}
 admin:
-  access_log_path: "/dev/null"
+  access_log_path: /tmp/admin_access.log
   address:
     socket_address:
-      address: 0.0.0.0
+      address: 127.0.0.1
       port_value: 19000
