@@ -4,7 +4,7 @@ else
   PORT="${ENVOY_PORT}"
 fi
 
-CONTAINER_NAME=simple-proxy
+CONTAINER_NAME=envoy-tproxy
 DOCKERFILE=envoy.Dockerfile
 
 docker stop ${CONTAINER_NAME} || true
