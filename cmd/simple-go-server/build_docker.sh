@@ -1,4 +1,7 @@
-if [[ -z "${SIMPLE_PORT}" ]]; then
+# Enable exit on non 0
+set -e
+
+if [ -z "${SIMPLE_PORT}" ]; then
   PORT=5000
 else
   PORT="${SIMPLE_PORT}"

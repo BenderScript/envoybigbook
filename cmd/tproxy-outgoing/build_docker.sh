@@ -1,4 +1,7 @@
-if [[ -z "${ENVOY_PORT}" ]]; then
+# Enable exit on non 0
+set -e
+
+if [ -z "${ENVOY_PORT}" ]; then
   PORT=4999
 else
   PORT="${ENVOY_PORT}"
