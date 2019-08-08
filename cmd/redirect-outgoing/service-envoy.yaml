@@ -33,9 +33,10 @@ static_resources:
                 http_filters:
                   - name: envoy.router
                     typed_config: {}
-      listener_filters:
-        - name: envoy.listener.original_dst
-          typed_config: {}
+#      listener_filters:
+#        - name: envoy.listener.original_dst
+#          typed_config: {}
+      use_original_dst: true
     - name: listener_1
       address:
         socket_address: { address: 0.0.0.0, port_value: 8443 }
@@ -45,9 +46,10 @@ static_resources:
               config:
                 stat_prefix: ingress_https
                 cluster: tcp_default
-      listener_filters:
-        - name: envoy.listener.original_dst
-          typed_config: {}
+      use_original_dst: true
+#      listener_filters:
+#        - name: envoy.listener.original_dst
+#          typed_config: {}
   clusters:
     - name: http_default
       type: ORIGINAL_DST
