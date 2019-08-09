@@ -4,8 +4,8 @@ EXPOSE 4999
 EXPOSE 19000
 EXPOSE 8443
 
-RUN apt-get update -qq && apt-get install -qq iputils-ping
-RUN apt-get install -qq curl
+RUN apt-get -qq update -&& apt-get -qq install -iputils-ping
+RUN apt-get -qq install curl
 
 ADD ./service-envoy.yaml /etc/service-envoy.yaml
 ADD ./start_envoy.sh /usr/local/bin/start_envoy.sh
