@@ -1,20 +1,14 @@
 # Tutorial
 
-In this example of we run a Envoy Proxy on that listens on port 4999 and redirects request to a server running on port 5000.
+In this example of we run a Envoy Proxy on that listens on port 4999 and directs to a server running on port 5000.
  
  The web server should run as a native application and not inside a container. This was a requirements in order to easily debug request issues.
 
 Build the envoy container:
 
 ```
-docker build -t simple-proxy .
+./build_docker.sh
 ``` 
-
-Run the container:
-
-```
-docker run -d -p 4999:4999 -p 19000:19000 simple-proxy
-```
 
 Without a web server a request would look like this:
 
@@ -37,6 +31,8 @@ curl -v http://localhost:4999/
 <
 * Connection #0 to host localhost left intact
 ```
+
+
 
 
 
