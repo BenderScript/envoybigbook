@@ -13,7 +13,7 @@ else
   HTTPS_PORT="${ENVOY_HTTPS_PORT}"
 fi
 
-CONTAINER_NAME=envoy-redirect
+CONTAINER_NAME=envoy-forward
 DOCKERFILE=envoy.Dockerfile
 
 docker stop ${CONTAINER_NAME} || true

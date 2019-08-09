@@ -6,8 +6,8 @@ EXPOSE 8443
 
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get update -qq && \
-    apt-get install -qq \
+RUN apt-get -qq update && \
+    apt-get -qq install  \
                 apt-utils \
                 iputils-ping \
                 curl \
