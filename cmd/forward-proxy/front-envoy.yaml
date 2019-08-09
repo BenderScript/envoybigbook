@@ -1,4 +1,3 @@
-# https://www.envoyproxy.io/docs/envoy/latest/configuration/http_filters/dynamic_forward_proxy_filter
 admin:
   access_log_path: /tmp/admin_access.log
   address:
@@ -39,15 +38,14 @@ static_resources:
                         name: dynamic_forward_proxy_cache_config
                         dns_lookup_family: V4_ONLY
                   - name: envoy.router
-                typed_config: {}
   clusters:
     - name: dynamic_forward_proxy_cluster
       connect_timeout: 1s
       lb_policy: CLUSTER_PROVIDED
       cluster_type:
         name: envoy.clusters.dynamic_forward_proxy
-      typed_config:
-        "@type": type.googleapis.com/envoy.config.cluster.dynamic_forward_proxy.v2alpha.ClusterConfig
-        dns_cache_config:
-          name: dynamic_forward_proxy_cache_config
-          dns_lookup_family: V4_ONLY
+        typed_config:
+          "@type": type.googleapis.com/envoy.config.cluster.dynamic_forward_proxy.v2alpha.ClusterConfig
+          dns_cache_config:
+            name: dynamic_forward_proxy_cache_config
+            dns_lookup_family: V4_ONLY
