@@ -4,8 +4,14 @@ EXPOSE 4999
 EXPOSE 19000
 EXPOSE 8443
 
-RUN apt-get -qq -o=Dpkg::Use-Pty=0 update && apt-get -qq -o=Dpkg::Use-Pty=0 install iputils-ping
-RUN apt-get -qq -o=Dpkg::Use-Pty=0 install curl
+ENV DEBIAN_FRONTEND noninteractive
+
+RUN apt-get update -qq && \
+    apt-get install -qq \
+                apt-utils \
+                iputils-ping \
+                curl \
+                < /dev/null > /dev/null
 
 ADD ./service-envoy.yaml /etc/service-envoy.yaml
 ADD ./start_envoy.sh /usr/local/bin/start_envoy.sh
