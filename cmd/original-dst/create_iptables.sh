@@ -1,8 +1,28 @@
 # Enable exit on non 0
 set -e
 
-sudo iptables -t nat -A OUTPUT -p tcp -m tcp --dport 80 -j REDIRECT --to-port 4999
+
+iptables -t nat -N redirect-marked
+iptables -A redirect-marked -t mangle -i eth1 -j MARK --set-mark 1
+iptables -t nat -A redirect-marked --p tcp -m tcp --dport 80 -j REDIRECT --to-port 4999
+
+sudo iptables -A OUTPUT -t mangle --match mark --mark 0x0 -j mark-packets
+
+iptables -t mangle -N mark-packets
+iptables -t mangle -A PREROUTING -j MARK --set-mark 0x7
+
+
+sudo iptables -t nat -A OUTPUT --match mark --mark 0x0 -p tcp -m tcp --dport 80 -j REDIRECT --to-port 4999
+sudo iptables -t nat -A OUTPUT --match mark --mark 0x7 -p tcp -m tcp --dport 80 -j REDIRECT --to-port 4999
 sudo iptables -t nat -A OUTPUT -p tcp -m tcp --dport 443 -j REDIRECT --to-ports 8443
+
+
+sudo iptables -A DOCKER-USER -p tcp -m tcp --dport 4999 -j MARK --set-mark 0x7
+
+sudo iptables -A DOCKER-USER -p tcp -m tcp --dport 80 -j MARK --set-mark 0x7
+
+sudo iptables -t filter -L --line-numbers
+
 
 sudo iptables -t nat -L --line-numbers
 #Chain PREROUTING (policy ACCEPT)
