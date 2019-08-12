@@ -225,4 +225,13 @@ We add IPTables rules in place and resend request. These are the captured Envoy 
 [2019-08-12 00:30:31.408][13][debug][client] [source/common/http/codec_client.cc:82] [C1] disconnect. resetting 0 pending requests
 [2019-08-12 00:30:31.408][13][debug][pool] [source/common/http/http1/conn_pool.cc:129] [C1] client disconnected, failure reason:
 ```
+## IPTables Statistics
 
+```
+</html>ubuntu@ip-172-31-22-139:~$ sudo iptables -t nat -nvL OUTPUT
+Chain OUTPUT (policy ACCEPT 9 packets, 764 bytes)
+ pkts bytes target     prot opt in     out     source               destination
+    0     0 DOCKER     all  --  *      *       0.0.0.0/0           !127.0.0.0/8          ADDRTYPE match dst-type LOCAL
+    1    60 REDIRECT   tcp  --  *      *       0.0.0.0/0            3.223.234.9          mark match 0x0 tcp dpt:80 redir ports 4999
+    0     0 REDIRECT   tcp  --  *      *       0.0.0.0/0            52.22.188.80         mark match 0x0 tcp dpt:80 redir ports 4999
+ ```
