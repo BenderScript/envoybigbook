@@ -1,7 +1,6 @@
 static_resources:
   listeners:
-    - name: listener_0
-      address:
+    - address:
         socket_address:
           address: 0.0.0.0
           port_value: 4999
@@ -23,8 +22,8 @@ static_resources:
                           route:
                             cluster: cluster1
                 http_filters:
-                - name: envoy.router
-                  typed_config: {}
+                  - name: envoy.router
+                    typed_config: {}
                 codec_type: auto
       listener_filters:
         - name: envoy.listener.original_dst
@@ -34,6 +33,7 @@ static_resources:
       type: ORIGINAL_DST
       connect_timeout: 6s
       lb_policy: ORIGINAL_DST_LB
+      dns_lookup_family: V4_ONLY
 cluster_manager: {}
 watchdog: {}
 admin:
