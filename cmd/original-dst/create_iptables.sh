@@ -11,10 +11,10 @@ sudo iptables -A OUTPUT -t mangle --match mark --mark 0x0 -j mark-packets
 iptables -t mangle -N mark-packets
 
 # Packet from inside container match this rule
-sudo iptables -t mangle -I PREROUTING -p tcp -m tcp --dport 80 -d  151.101.41.67 -j MARK --set-mark 0x7
+sudo iptables -t mangle -I PREROUTING -p tcp -m tcp --dport 80 -d  3.223.234.9 -j MARK --set-mark 0x7
 sudo iptables -t mangle -nvL PREROUTING
-sudo iptables -t nat -A OUTPUT --match mark --mark 0x0 -p tcp -m tcp --dport 80 -d  151.101.41.67 -j REDIRECT --to-port 4999
-sudo iptables -t nat -A OUTPUT --match mark --mark 0x0 -p tcp -m tcp --dport 80 -d  151.101.189.67 -j REDIRECT --to-port 4999
+sudo iptables -t nat -A OUTPUT --match mark --mark 0x0 -p tcp -m tcp --dport 80 -d  3.223.234.9 -j REDIRECT --to-port 4999
+sudo iptables -t nat -A OUTPUT --match mark --mark 0x0 -p tcp -m tcp --dport 80 -d  52.22.188.80 -j REDIRECT --to-port 4999
 
 sudo iptables -t nat -nvL OUTPUT
 
