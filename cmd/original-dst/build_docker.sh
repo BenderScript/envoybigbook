@@ -15,7 +15,7 @@ fi
 
 CONTAINER_NAME=envoy-original-dest
 DOCKERFILE=envoy.Dockerfile
-:q!
+
 docker stop ${CONTAINER_NAME} || true
 docker rm ${CONTAINER_NAME} || true
 docker rmi -f ${CONTAINER_NAME} || true
