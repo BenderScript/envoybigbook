@@ -3,6 +3,7 @@ node:
   cluster: "cluster_identity"
 static_resources:
   listeners:
+    - transparent: true
     - address:
         socket_address:
           address: 0.0.0.0
