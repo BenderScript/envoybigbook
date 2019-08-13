@@ -13,7 +13,8 @@ RUN apt-get -qq update && \
                 curl \
                 < /dev/null > /dev/null
 
-ADD ./front-envoy.yaml /etc/service-envoy.yaml
+ADD ./service-envoy.yaml /etc/service-envoy.yaml
 ADD ./start_envoy.sh /usr/local/bin/start_envoy.sh
-RUN chmod u+x /usr/local/bin/start_envoy.sh
-ENTRYPOINT /usr/local/bin/start_envoy.sh
+WORKDIR /usr/local/bin
+RUN chmod u+x start_envoy.sh
+ENTRYPOINT ./start_envoy.sh
