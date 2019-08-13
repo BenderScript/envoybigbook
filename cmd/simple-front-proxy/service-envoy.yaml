@@ -34,7 +34,7 @@ static_resources:
 
   clusters:
     - name: simple-server
-      connect_timeout: 0.25s
+      connect_timeout: 2s
       type: STRICT_DNS
       lb_policy: round_robin
       hosts:

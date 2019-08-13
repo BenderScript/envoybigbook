@@ -41,7 +41,6 @@ static_resources:
         - socket_address:
             address: "host.docker.internal"
             port_value: 5000
-
 admin:
   access_log_path: "/dev/null"
   address:
