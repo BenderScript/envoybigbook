@@ -18,9 +18,14 @@ Another host runs the web server
 
 ## Envoy Docker
 
+Build and run Envoy Docker
+
+```
+./build_docker_net_admin.sh
+```
+
 Envoy docker needs to run with *--network host* because it needs access to the original destination IP:port of the packet. This is done by using the socket option **SO_ORIGINAL_DST**. Check Envoy's specific documentation on [original destination filter](https://www.envoyproxy.io/docs/envoy/latest/configuration/listener_filters/original_dst_filter)
 
-The shell script [here](./build_docker_net_admin.sh) builds and run the docker container.
 
 ### Socket Option SO_ORIGINAL_DST
 
@@ -30,17 +35,21 @@ A small [python script](./original_destination.py) is included to demonstrate ho
 
 We redirect HTTP requests to Envoy's port, in this case 4999. It is important to notice that in order to avoid **infinite redirection loops**, we match on non-root user IDs. This assumes Envoy Proxy was started by the root user, otherwise use the UID of the user that started the envoy process or container.
 
+Add the following IPTable rule. 
+
 ```
 sudo iptables -t nat -A OUTPUT -p tcp -m tcp --dport 80 -d  172.31.24.143 -m owner ! --uid-owner 0 -j REDIRECT --to-port 4999
 ```
 
 ## Web Server
 
-I use [httpbin](http://httpbin.org/) as the Web Server. A reliable, no-hassle, perfect-for-testing web server.
+The Web Server for this example was running on 172.31.24.143
+
+I normally use [httpbin](http://httpbin.org/) as the Web Server. A reliable, no-hassle, perfect-for-testing web server.
 
 ## HTTP Request
 
-We use cURL to perform the HTTP request the web server running on 172.31.24.143
+Use cURL or your preferred HTTP client to perform a request to the web server
 
 ```
 ubuntu@ip-172-31-22-139:~/identity/cmd/original-dst$ curl -v 172.31.24.143
