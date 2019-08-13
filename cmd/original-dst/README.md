@@ -1,10 +1,26 @@
 # Tutorial
 
-This tutorial shows how to use a [original destination cluster](https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/upstream/service_discovery#arch-overview-service-discovery-types-original-destination) to run Envoy Proxy as a forward proxy. IN other words, Envoy will proxy connections created within the sam host it is running.
+This tutorial shows how to use a [original destination cluster](https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/upstream/service_discovery#arch-overview-service-discovery-types-original-destination) to run Envoy Proxy as a forward proxy. In other words, Envoy will proxy connections created within the sam host it is running.
+
+This was tested on Ubuntu 18.04
+
+
+## Network Diagram
+
+The HTTP Client (cURL) and Envoy proxy share the same host. cURL runs as a native application and Envoy runs in a  docker container
+
+Another host runs the web server
+
+```
+
+                                                               
+```
 
 ## Envoy Docker
 
 Envoy docker needs to run with *--network host* because it needs access to the original destination IP:port of the packet. This is done by using the socket option **SO_ORIGINAL_DST**. Check Envoy's specific documentation on [original destination filter](https://www.envoyproxy.io/docs/envoy/latest/configuration/listener_filters/original_dst_filter)
+
+The shell script [here](./build_docker_net_admin.sh) builds and run the docker container.
 
 ## IPTables
 
@@ -13,6 +29,10 @@ We redirect HTTP requests to Envoy's port, in this case 4999. It is important to
 ```
 sudo iptables -t nat -A OUTPUT -p tcp -m tcp --dport 80 -d  172.31.24.143 -m owner ! --uid-owner 0 -j REDIRECT --to-port 4999
 ```
+
+## Web Server
+
+I use [httpbin](http://httpbin.org/) as the Web Server. A reliable, no-hassle, perfect-for-testing web server.
 
 ## HTTP Request
 
