@@ -6,7 +6,7 @@ In this example of we run a Envoy Proxy on that listens on port 4999 and directs
 
 ## Envoy Docker
 
-Build the envoy container:
+Build and run the envoy container. The container runs with *--network host* in order to reach the web server running on the host.
 
 ```
 ./build_docker.sh
