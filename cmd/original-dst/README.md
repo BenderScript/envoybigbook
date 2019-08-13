@@ -47,6 +47,10 @@ The Web Server for this example was running on 172.31.24.143
 
 I normally use [httpbin](http://httpbin.org/) as the Web Server. A reliable, no-hassle, perfect-for-testing web server.
 
+```
+docker run -p 80:80 kennethreitz/httpbin
+```
+
 ## HTTP Request
 
 Use cURL or your preferred HTTP client to perform a request to the web server
