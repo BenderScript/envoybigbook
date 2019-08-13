@@ -22,6 +22,10 @@ Envoy docker needs to run with *--network host* because it needs access to the o
 
 The shell script [here](./build_docker_net_admin.sh) builds and run the docker container.
 
+### Socket Option SO_ORIGINAL_DST
+
+A small [python script](./original_destination.py) is included to demonstrate how proxies get the original IP:port from redirected connections. Assuming the IPTables rule below is in place, start this script as root instead of Envoy to get a deeper understanding of this socket option.
+
 ## IPTables
 
 We redirect HTTP requests to Envoy's port, in this case 4999. It is important to notice that in order to avoid **infinite redirection loops**, we match on non-root user IDs. This assumes Envoy Proxy was started by the root user, otherwise use the UID of the user that started the envoy process or container.
