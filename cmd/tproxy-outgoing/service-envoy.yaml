@@ -3,9 +3,11 @@ node:
   cluster: "cluster_identity"
 static_resources:
   listeners:
-    - transparent: true
-    - address:
+    - name: listener_0
+      use_transparent: true
+      address:
         socket_address:
+          protocol: TCP
           address: 0.0.0.0
           port_value: 4999
       filter_chains:
