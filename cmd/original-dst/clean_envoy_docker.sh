@@ -3,6 +3,6 @@ set -e
 
 CONTAINER_NAME=envoy-original-dest
 
-docker stop ${CONTAINER_NAME} || true
-docker rm ${CONTAINER_NAME} || true
-docker rmi -f ${CONTAINER_NAME} || true
+docker stop ${CONTAINER_NAME} 2> /dev/null || true
+docker rm ${CONTAINER_NAME} 2> /dev/null || true
+docker rmi -f ${CONTAINER_NAME} 2> /dev/null || true
