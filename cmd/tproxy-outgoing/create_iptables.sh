@@ -1,48 +1,3 @@
-# TPROXY on AWS Ubuntu
-
-# https://www.kernel.org/doc/Documentation/networking/tproxy.txt
-# https://github.com/tinyproxy/tinyproxy/issues/181
-
-
-
-MACHINE=$(uname -r)
-# grep TPROXY /boot/config-4.15.0-1044-aws
-grep TPROXY /boot/config-"$MACHINE"
-
-ls /lib/modules/"$MACHINE"/kernel/net/netfilter/ | grep TPROXY
-
-# File name is usually xt_TPROXY.ko
-
-# check if module could be loaded
-
-sudo modprobe -v -n xt_TPROXY
-
-# Is module already loaded
-
-lsmod | grep -i tproxy
-
-# LOAD module
-
-sudo modprobe -v xt_TPROXY
-
-# Check if Module is loaded
-
-lsmod | grep -i tproxy
-
-# check for iptables extension 'socket'
-
-sudo iptables -m socket --help
-
-#
-# ...
-# socket match options:
-#  --nowildcard     Do not ignore LISTEN sockets bound on INADDR_ANY
-#  --transparent    Ignore non-transparent sockets
-#  --restore-skmark Set the packet mark to the socket mark if
-#                   the socket matches and transparent /
-#                   nowildcard conditions are satisfied
-
-sudo iptables -j TPROXY --help
 
 
 # TPROXY target options:
@@ -51,10 +6,13 @@ sudo iptables -j TPROXY --help
 #  --tproxy-mark value[/mask]        Mark packets with the given value/mask
 
 # new chain DIVERT in mangle table for marking
-sudo iptables -t mangle -N DIVERT
-sudo iptables -t mangle -A PREROUTING -p tcp -m socket -j DIVERT
-sudo iptables -t mangle -A DIVERT -j MARK --set-mark 1
-sudo iptables -t mangle -A DIVERT -j ACCEPT
+# sudo iptables -t mangle -N DIVERT
+# sudo iptables -t mangle -A PREROUTING -p tcp -m socket -j DIVERT
+# sudo iptables -t mangle -A DIVERT -j MARK --set-mark 1
+# sudo iptables -t mangle -A DIVERT -j ACCEPT
+
+sudo iptables -t mangle -A OUTPUT -p tcp -m socket -j MARK --set-mark 1
+# sudo iptables -t mangle -A DIVERT -j ACCEPT
 
 # Verify
 
@@ -123,4 +81,6 @@ sudo ip route add local 0.0.0.0/0 dev lo table 100
 
 sudo sysctl -w net.ipv4.conf.all.route_localnet=1
 
-sudo iptables -t mangle -A PREROUTING -p tcp --dport 80 -j TPROXY --tproxy-mark 0x1/0x1 --on-port 4999
+# sudo iptables -t mangle -A PREROUTING -p tcp --dport 80 -j TPROXY --tproxy-mark 0x1/0x1 --on-port 4999
+
+sudo iptables -t mangle -A OUTPUT -p tcp --dport 80 -m owner ! --uid-owner 0 -j TPROXY --tproxy-mark 0x1/0x1 --on-port 4999
