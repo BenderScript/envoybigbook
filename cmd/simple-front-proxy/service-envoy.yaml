@@ -37,6 +37,7 @@ static_resources:
       connect_timeout: 2s
       type: STRICT_DNS
       lb_policy: round_robin
+      dns_lookup_family: V4_ONLY
       hosts:
         - socket_address:
             address: localhost

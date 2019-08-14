@@ -9,7 +9,7 @@ This was tested on Ubuntu 18.04
 
 The HTTP Client (cURL) and Envoy proxy share the same host. cURL runs as a native application and Envoy runs in a  docker container
 
-Another host runs the web server
+A second host runs the web server
 
 ```
 
@@ -21,7 +21,7 @@ Another host runs the web server
 Build and run Envoy Docker
 
 ```
-./build_docker_net_admin.sh
+./build_envoy_docker_net_admin.sh
 ```
 
 Envoy docker needs to run with *--network host* because it needs access to the original destination IP:port of the packet. This is done by using the socket option **SO_ORIGINAL_DST**. Check Envoy's specific documentation on [original destination filter](https://www.envoyproxy.io/docs/envoy/latest/configuration/listener_filters/original_dst_filter)
@@ -38,7 +38,7 @@ We redirect HTTP requests to Envoy's port, in this case 4999. It is important to
 Add the following IPTable rule. 
 
 ```
-sudo iptables -t nat -A OUTPUT -p tcp -m tcp --dport 80 -d  172.31.24.143 -m owner ! --uid-owner 0 -j REDIRECT --to-port 4999
+./create_ip_tables.sh
 ```
 
 ## Web Server
@@ -48,7 +48,7 @@ The Web Server for this example was running on 172.31.24.143
 I normally use [httpbin](http://httpbin.org/) as the Web Server. A reliable, no-hassle, perfect-for-testing web server.
 
 ```
-docker run -p 80:80 kennethreitz/httpbin
+./run_web_docker.sh
 ```
 
 ## HTTP Request
@@ -56,7 +56,7 @@ docker run -p 80:80 kennethreitz/httpbin
 Use cURL or your preferred HTTP client to perform a request to the web server
 
 ```
-ubuntu@ip-172-31-22-139:~/identity/cmd/original-dst$ curl -v 172.31.24.143
+ubuntu$ curl -v 172.31.24.143
 * Rebuilt URL to: 172.31.24.143/
 *   Trying 172.31.24.143...
 * TCP_NODELAY set
@@ -155,4 +155,11 @@ Envoy Logs for successful run.
 [2019-08-13 07:17:40.478][13][debug][upstream] [source/common/upstream/cluster_manager_impl.cc:981] removing hosts for TLS cluster cluster1 removed 1
 [2019-08-13 07:17:40.506][7][debug][main] [source/server/server.cc:170] flushing stats
 [2019-08-13 07:17:45.510][7][debug][main] [source/server/server.cc:170] flushing stats
+```
+
+## Cleaning
+
+```
+./clean_envoy_docker.sh
+./clean_web_docker.sh
 ```

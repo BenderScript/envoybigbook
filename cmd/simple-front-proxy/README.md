@@ -1,5 +1,8 @@
 # Tutorial
 
+**Tested on Ubuntu 18.04**
+
+
 In this example of we run a Envoy Proxy on that listens on port 4999 and directs to a server running on port 5000.
  
  The web server runs as a separate container from Envoy so any web server will do as long as it is listening on port 5000. This also helped me debug issues and make the example more realistic.
@@ -9,7 +12,7 @@ In this example of we run a Envoy Proxy on that listens on port 4999 and directs
 Build and run the envoy container. The container runs with *--network host* in order to reach the web server running on the host.
 
 ```
-./build_docker.sh
+./build_envoy_docker.sh
 ``` 
 
 Without a web server a request would look like this:
@@ -38,7 +41,7 @@ curl -v http://localhost:4999/
 I normally use [httpbin](http://httpbin.org/) as the Web Server. A reliable, no-hassle, perfect-for-testing web server.
 
 ```
-docker run -d -p 5000:80 kennethreitz/httpbin
+./run_web_docker.sh
 ```
 
 ## HTTP Request
@@ -67,6 +70,8 @@ ubuntu$ curl -v localhost:4999
 ```
 
 ## Envoy Logs
+
+Envoy Logs from a successful run.
 
 ```
 2019-08-13 21:36:29.305][14][debug][main] [source/server/connection_handler_impl.cc:280] [C2] new connection
@@ -124,6 +129,10 @@ ubuntu$ curl -v localhost:4999
 [2019-08-13 21:36:31.478][7][debug][main] [source/server/server.cc:170] flushing stats
 [2019-08-13 21:36:36.482][7][debug][main] [source/server/server.cc:170] flushing stats
 ```
+## Cleaning
 
-
+```
+./clean_envoy_docker.sh
+./clean_web_docker.sh
+```
 
