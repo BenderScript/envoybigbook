@@ -28,7 +28,7 @@ Build and run Envoy Docker
 
 Envoy docker needs to run with *--network host* because it needs access to the original destination IP:port of the packet. This is done by using the socket option **SO_ORIGINAL_DST**. Check Envoy's specific documentation on [original destination filter](https://www.envoyproxy.io/docs/envoy/latest/configuration/listener_filters/original_dst_filter)
 
-Finally, it is important that the Envoy container is run under root in order for the IPTables redirection to work properly.
+Finally, the Envoy container **must** be run under root in order for the IPTables redirection to work properly as we will see later.
 
 ```
 ubuntu$ ps aux | grep envoy
@@ -45,9 +45,9 @@ A small [python script](./original_destination.py) is included to demonstrate ho
 
 ## IPTables
 
-We redirect HTTP requests to Envoy's port, in this case 4999. It is important to notice that in order to avoid **infinite redirection loops**, we match on non-root user IDs. This assumes Envoy Proxy was started by the root user, otherwise use the UID of the user that started the envoy process or container.
+We redirect HTTP requests to Envoy's port, in this case 4999. It is important to notice that in order to avoid **infinite redirection loops**, we match on non-root user IDs. This assumes Envoy Proxy is run under the root user.
 
-Add the following IPTable rule. 
+Add the IPTables rule. 
 
 ```
 ./create_ip_tables.sh
