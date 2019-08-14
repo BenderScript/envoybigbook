@@ -15,10 +15,6 @@ ls /lib/modules/"$MACHINE"/kernel/net/netfilter/ | grep TPROXY
 
 sudo modprobe -v -n xt_TPROXY
 
-# Is module already loaded
-
-lsmod | grep -i tproxy
-
 # LOAD module
 
 sudo modprobe -v xt_TPROXY
