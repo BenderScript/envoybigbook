@@ -6,6 +6,8 @@ In this example of we run a Forward Envoy Proxy that listens on port 4999 and af
 
 The use-case is applications running on the same host as the envoy proxy using it as a forward proxy. Applications can not communicate directly out to due IPTables rules.
 
+## Envoy Docker
+
 Build and run the envoy container:
 
 ```
@@ -44,11 +46,15 @@ ubuntu$ curl -v www.cnn.com
 * Closing connection 0
 ```
 
+## IPTables
+
 Now install the IPtables redirect rules
 
 ```
 ./create_iptables.sh
 ```
+
+## HTTP Request
 
 Access to websites on ports 80 and 443 should go through the envoy proxy. Noticed the *x-envoy-upstream-service-time: 1* HTTP header
 
@@ -80,9 +86,24 @@ ubuntu$ curl -v www.cnn.com
 < x-envoy-upstream-service-time: 1
 <
 * Connection #0 to host www.cnn.com left intact
+```
+
+## IPTables Stats
+
+IPTables statistics should show the redirected packets
 
 ```
-Envoy Proxy Debug Logs
+ubuntu@ip-172-31-22-139:~/identity/cmd/forward-proxy$ sudo iptables -t nat -nvL OUTPUT
+Chain OUTPUT (policy ACCEPT 17 packets, 1366 bytes)
+ pkts bytes target     prot opt in     out     source               destination
+    0     0 DOCKER     all  --  *      *       0.0.0.0/0           !127.0.0.0/8          ADDRTYPE match dst-type LOCAL
+    1    60 REDIRECT   tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            tcp dpt:80 redir ports 4999
+    0     0 REDIRECT   tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            tcp dpt:443 redir ports 8443
+```
+
+## Envoy Logs
+
+Envoy Logs for successful run.
 
 ```
 [2019-08-09 15:59:20.598][14][debug][main] [source/server/connection_handler_impl.cc:280] [C0] new connection
