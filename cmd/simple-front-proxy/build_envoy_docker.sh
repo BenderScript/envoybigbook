@@ -1,7 +1,7 @@
 # Enable exit on non 0
 set -e
 
-. clean_docker.sh
+. clean_envoy_docker.sh
 
 if [ -z "${ENVOY_PORT}" ]; then
   PORT=4999
