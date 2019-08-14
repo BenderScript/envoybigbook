@@ -9,7 +9,7 @@ The use-case is applications running on the same host as the envoy proxy using i
 Build and run the envoy container:
 
 ```
-./build_docker.sh
+./build_envoy_docker.sh
 ```
 
 Make sure you are still able to access the Internet unhindered
@@ -158,6 +158,13 @@ Envoy Proxy Debug Logs
 [2019-08-09 15:59:20.603][14][debug][connection] [source/common/network/connection_impl.cc:518] [C0] remote close
 [2019-08-09 15:59:20.603][14][debug][connection] [source/common/network/connection_impl.cc:188] [C0] closing socket: 0
 [2019-08-09 15:59:20.603][14][debug][main] [source/server/connection_handler_impl.cc:80] [C0] adding to cleanup list
+```
+
+## Cleaning
+
+```
+./clean_envoy_docker.sh
+./clean_iptables.sh
 ```
 
 
