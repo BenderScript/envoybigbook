@@ -3,8 +3,6 @@
 # https://www.kernel.org/doc/Documentation/networking/tproxy.txt
 # https://github.com/tinyproxy/tinyproxy/issues/181
 
-
-
 MACHINE=$(uname -r)
 # grep TPROXY /boot/config-4.15.0-1044-aws
 grep TPROXY /boot/config-"$MACHINE"
@@ -31,7 +29,13 @@ lsmod | grep -i tproxy
 
 # check for iptables extension 'socket'
 
-sudo iptables -m socket --help
+
+if sudo iptables -m socket --help | grep -q "socket match options"; then
+    printf "%s\n" "IPTables Socket option is present"
+else
+    printf "%s\n" "IPTables Socket option not found"
+    exit 1
+fi
 
 #
 # ...
@@ -42,4 +46,10 @@ sudo iptables -m socket --help
 #                   the socket matches and transparent /
 #                   nowildcard conditions are satisfied
 
-sudo iptables -j TPROXY --help
+if sudo iptables -j TPROXY --help | grep -q "TPROXY target options"; then
+    printf "%s\n" "IPTables TPROXY option is present"
+else
+    printf "%s\n" "IPTables TPROXY option not found"
+    exit 1
+fi
+
