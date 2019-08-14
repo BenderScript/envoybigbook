@@ -28,6 +28,16 @@ Build and run Envoy Docker
 
 Envoy docker needs to run with *--network host* because it needs access to the original destination IP:port of the packet. This is done by using the socket option **SO_ORIGINAL_DST**. Check Envoy's specific documentation on [original destination filter](https://www.envoyproxy.io/docs/envoy/latest/configuration/listener_filters/original_dst_filter)
 
+Finally, it is important that the Envoy container is run under root in order for the IPTables redirection to work properly.
+
+```
+ubuntu$ ps aux | grep envoy
+ubuntu     315  0.0  0.0  14660  1024 pts/0    S+   04:23   0:00 grep --color=auto envoy
+root     32726  2.8  0.0   4504   700 ?        Ss   04:23   0:00 /bin/sh -c ./start_envoy.sh
+root     32756  0.0  0.0   4504   780 ?        S    04:23   0:00 /bin/sh ./start_envoy.sh
+root     32757  0.2  0.5 118568 21872 ?        Sl   04:23   0:00 envoy -c /etc/service-envoy.yaml --log-level debug
+```
+
 
 ### Socket Option SO_ORIGINAL_DST
 
@@ -45,7 +55,7 @@ Add the following IPTable rule.
 
 ## Web Server
 
-The Web Server for this example was running on 172.31.24.143
+The Web Server for this example was running on *172.31.24.143*
 
 I normally use [httpbin](http://httpbin.org/) as the Web Server. A reliable, no-hassle, perfect-for-testing web server.
 
