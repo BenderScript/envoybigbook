@@ -9,6 +9,7 @@ RUN apt-get -qq update && \
                 apt-transport-https \
                 ca-certificates \
                 gnupg-agent \
+                iptables \
                 software-properties-common \
                 < /dev/null > /dev/null
 

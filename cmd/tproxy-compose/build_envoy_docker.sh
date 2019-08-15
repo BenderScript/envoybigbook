@@ -19,4 +19,4 @@ CONTAINER_NAME=envoy-tproxy
 DOCKERFILE=envoy.Dockerfile
 
 docker build -f ${DOCKERFILE} -t ${CONTAINER_NAME} .
-docker run -it -p "${PORT}":"${PORT}" -p "${ADMIN_PORT}":"${ADMIN_PORT}" --name ${CONTAINER_NAME} ${CONTAINER_NAME}
+docker run -it --cap-add=NET_ADMIN --cap-add=NET_RAW -p "${PORT}":"${PORT}" -p "${ADMIN_PORT}":"${ADMIN_PORT}" --name ${CONTAINER_NAME} ${CONTAINER_NAME}
