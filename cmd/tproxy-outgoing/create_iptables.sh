@@ -11,7 +11,7 @@
 # sudo iptables -t mangle -A DIVERT -j MARK --set-mark 1
 # sudo iptables -t mangle -A DIVERT -j ACCEPT
 
-sudo iptables -t mangle -A PREROUTING -p tcp --dport 80 -m socket -j MARK --set-mark 1
+sudo iptables -t mangle -A PREROUTING -p tcp -m socket -j MARK --set-mark 1
 # sudo iptables -t mangle -A DIVERT -j ACCEPT
 
 # Verify
