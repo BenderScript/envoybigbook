@@ -21,7 +21,7 @@ sudo ip route add local 0.0.0.0/0 dev lo table 100
 
 #ubuntu:~$ ip route show table all
 
-sudo sysctl -w net.ipv4.conf.all.route_localnet=1
+# sudo sysctl -w net.ipv4.conf.all.route_localnet=1
 
 sudo iptables -t mangle -A PREROUTING -p tcp --dport 80 -j TPROXY --tproxy-mark 0x1/0x1 --on-port 4999
 
