@@ -4,7 +4,7 @@ node:
 static_resources:
   listeners:
     - name: listener_0
-      use_transparent: true
+      transparent: true
       address:
         socket_address:
           protocol: TCP
