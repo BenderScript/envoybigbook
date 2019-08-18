@@ -31,6 +31,7 @@ Enable forwarding on the host. There are many good tutorials on the web on how t
 Build and run Envoy Docker
 
 ```
+./build_ubuntu_docker.sh
 ./build_envoy_docker_net_admin.sh
 ```
 
@@ -191,8 +192,16 @@ Envoy Logs for successful run.
 
 ## Cleaning
 
+### Router
+
 ```
 ./clean_envoy_docker.sh
-./clean_web_docker.sh
+./clean_ubuntu_docker.sh
 ./clean_iptables.sh
+```
+
+### Web Server
+
+```
+./clean_web_docker.sh
 ```

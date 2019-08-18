@@ -5,7 +5,7 @@
 
 In this example of we run a Envoy Proxy on that listens on port 4999 and directs to a server running on port 5000.
  
- The web server runs as a separate container from Envoy so any web server will do as long as it is listening on port 5000. This also helped me debug issues and make the example more realistic.
+ The web server runs as a separate container from Envoy so any web server will do as long as it is listening on port 5000. 
 
 ## Envoy Docker
 
