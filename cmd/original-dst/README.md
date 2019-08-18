@@ -4,7 +4,7 @@ This tutorial shows how to use a [original destination cluster](https://www.envo
 
 In this example the client making HTTP requests resides on the same host as the Envoy Proxy. A practical use of such deployment is to apply security policy to the client (or application) before proxying the connection.
 
-This was tested on Ubuntu 18.04
+This was tested on **Ubuntu 18.04**
 
 
 ## Network Diagram

@@ -6,6 +6,10 @@ This example uses the same container as the Envoy Forward Proxy example but inst
 
 Reference for [Ubuntu Proxy settings](https://askubuntu.com/questions/175172/how-do-i-configure-proxies-without-gui)
 
+## Network Diagram
+
+In this tutorial we use a single host where we run the HTTP client and Envoy Proxy. The Web Server can be any accessible Internet web site.
+
 ## Envoy Docker
 
 Go to the [forward-proxy](../forward-proxy) directory, build and run the envoy container:

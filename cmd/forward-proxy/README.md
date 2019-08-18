@@ -2,9 +2,9 @@
 
 **This was tested on Ubuntu 18.04**
 
-In this example of we run a Forward Envoy Proxy that listens on port 4999 and after processing directs requests to their original destination. 
+In this example of we run a Forward Envoy Proxy that listens on port 4999 and directs requests to their original destination. 
 
-The use-case is applications running on the same host as the envoy proxy using it as a forward proxy. Applications can not communicate directly out to due IPTables rules.
+The practical use-case is to confine applications running on the same host as the envoy proxy by using it as a forward proxy. Applications can not communicate directly out due IPTables rules.
 
 ## Envoy Docker
 
