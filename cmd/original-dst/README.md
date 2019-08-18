@@ -9,14 +9,11 @@ This was tested on Ubuntu 18.04
 
 ## Network Diagram
 
-The HTTP Client (cURL) and Envoy proxy share the same host. cURL runs as a native application and Envoy runs in a  docker container
+The HTTP Client (cURL) and Envoy proxy share the same host. cURL runs as a native application and Envoy runs in a docker container
 
 A second host runs the web server
 
-```
-
-                                                               
-```
+![You need to see the network diagram][./img/envoy_network_original_dst.png]
 
 ## Envoy Docker
 
