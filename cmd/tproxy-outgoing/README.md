@@ -9,18 +9,18 @@ This was tested on **AWS** Ubuntu 18.04
 
 ## Network Diagram
 
-The HTTP Client (cURL) and Envoy proxy share the same host. cURL runs as a native application and Envoy runs in a  docker container
+ 
+![You need to see the network diagram][./img/envoy_network.png]
 
-A second host runs the web server
-
-```
-
-                                                               
-```
 
 ## Router
 
-The following steps should be done on the machine that will perform routing function for the test network.
+The router host performs the following functions:
+
+* Forwards packets between client and server
+* Runs Envoy Proxy
+* Transparently redirect packets to Envoy Proxy
+
 
 ### Forwarding
 
@@ -39,11 +39,14 @@ Envoy docker needs to run with **--network host** and **--cap-add=NET_ADMIN** be
 Finally, the Envoy container **must** be run under root in order for the IPTables redirection to work properly as we will see later. You should see an output similar to this one.
 
 ```
+ubuntu$ docker ps -a
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS               NAMES
+2cdeadaf09d1        envoy-tproxy        "/bin/sh -c ./start_…"   10 hours ago        Up 10 hours                             envoy-tproxy
 ubuntu$ ps aux | grep envoy
-ubuntu     315  0.0  0.0  14660  1024 pts/0    S+   04:23   0:00 grep --color=auto envoy
-root     32726  2.8  0.0   4504   700 ?        Ss   04:23   0:00 /bin/sh -c ./start_envoy.sh
-root     32756  0.0  0.0   4504   780 ?        S    04:23   0:00 /bin/sh ./start_envoy.sh
-root     32757  0.2  0.5 118568 21872 ?        Sl   04:23   0:00 envoy -c /etc/service-envoy.yaml --log-level debug
+root      4185  0.0  0.0   4628   812 ?        Ss   Aug17   0:00 /bin/sh -c ./start_envoy.sh
+root      4214  0.0  0.0   4628   796 ?        S    Aug17   0:00 /bin/sh ./start_envoy.sh
+root      4215  0.1  0.6 129688 24380 ?        Sl   Aug17   0:42 envoy -c /etc/service-envoy.yaml --log-level debug
+ubuntu    5802  0.0  0.0  14660  1148 pts/0    S+   09:32   0:00 grep --color=auto envoy
 ```
 
 
