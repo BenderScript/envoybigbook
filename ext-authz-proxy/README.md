@@ -13,9 +13,20 @@ Build and run Envoy Docker
 
 ```
 go build
+./ext-authz-proxy
 ```
 
-## 4. Client 
+## 4. Simple Web Server
+
+Go to simple-go-server directory
+
+```
+go build
+./simple-go-server
+```
+
+## 5. Client 
+
 
 
 
