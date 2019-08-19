@@ -6,11 +6,11 @@ This example uses the same container as the Envoy Forward Proxy example but inst
 
 Reference for [Ubuntu Proxy settings](https://askubuntu.com/questions/175172/how-do-i-configure-proxies-without-gui)
 
-## Network Diagram
+## 1. Network Diagram
 
 In this tutorial we use a single host where we run the HTTP client and Envoy Proxy. The Web Server can be any accessible Internet web site.
 
-## Envoy Docker
+## 2. Envoy Docker
 
 Go to the [forward-proxy](../forward-proxy) directory, build and run the envoy container:
 
@@ -50,7 +50,7 @@ ubuntu$ curl -v www.cnn.com
 * Closing connection 0
 ```
 
-## Environment variables
+## 3. Environment variables
 
 Now execute the script to set the environment variables
 
@@ -58,7 +58,7 @@ Now execute the script to set the environment variables
 source ./set_proxy.sh
 ```
 
-## HTTP Request
+## 4. HTTP Request
 
 Access to websites on ports 80 and 443 should go through the envoy proxy. Noticed the *x-envoy-upstream-service-time: 1* HTTP header
 
@@ -93,7 +93,7 @@ ubuntu$ curl -v www.cnn.com
 * Connection #0 to host localhost left intact
 ```
 
-## Envoy Logs
+## 5. Envoy Logs
 
 Envoy Logs for successful run.
 
@@ -175,7 +175,7 @@ Envoy Logs for successful run.
 [2019-08-15 05:10:24.430][14][debug][main] [source/server/connection_handler_impl.cc:80] [C2] adding to cleanup list
 ```
 
-## Cleaning
+## 6. Cleaning
 
 ```
 source ./unset_proxy.sh
