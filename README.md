@@ -37,3 +37,7 @@ Transparent Proxy or TPROXY is a Linux Kernel feature without a lot of documenta
 In this example of we run a Envoy Proxy on that listens on port 4999 and directs to a server running on port 5000.
  
  The web server runs as a separate container from Envoy so any web server will do as long as it is listening on port 5000. 
+
+### 1.6 External Authorization
+ 
+ Still working on this one. 
