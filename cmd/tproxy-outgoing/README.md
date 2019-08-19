@@ -7,13 +7,13 @@ Transparent Proxy or TPROXY is a Linux Kernel feature without a lot of documenta
 This was tested on **AWS** Ubuntu 18.04
 
 
-## Network Diagram
+## 1. Network Diagram
 
  
 ![You need to see the network diagram][./img/envoy_network.png]
 
 
-## Router
+## 2. Router
 
 The router host performs the following functions:
 
@@ -22,11 +22,11 @@ The router host performs the following functions:
 * Transparently redirect packets to Envoy Proxy
 
 
-### Forwarding
+### 2.1 Forwarding
 
 Enable forwarding on the host. There are many good tutorials on the web on how to enable forwarding on a Linux host. 
 
-### Envoy Docker
+### 2.2 Envoy Docker
 
 Build and run Envoy Docker
 
@@ -51,11 +51,11 @@ ubuntu    5802  0.0  0.0  14660  1148 pts/0    S+   09:32   0:00 grep --color=au
 ```
 
 
-#### Socket Option SO_ORIGINAL_DST
+#### 2.2.1 Socket Option SO_ORIGINAL_DST
 
 A small [python script](./original_destination.py) is included to demonstrate how proxies get the original IP:port from redirected connections. Assuming the IPTables rule below is in place, start this script as root instead of Envoy to get a deeper understanding of this socket option.
 
-### TPROXY
+### 2.3 TPROXY
 
 Installing TPROXY kernel module is tricky and there are many unanswered question from people on the net. If it *just works* when you try consider yourself lucky. Again, this tutorial was tested on AWS Ubuntu 18.04
 
@@ -65,7 +65,7 @@ I created this simple step-by-step script to help install TPROXY. If you get err
 ./tproxy_install.sh
 ```
 
-### IPTables, Route and Rule
+### 2.4 IPTables, Route and Rule
 
 In order for transparent proxy to work a set of IPTables rules, routes and rules need to be created. 
 
@@ -73,7 +73,7 @@ In order for transparent proxy to work a set of IPTables rules, routes and rules
 ./create_ip_tables.sh
 ```
 
-## Web Server
+## 3. Web Server
 
 The Web Server for this example was running on *172.31.24.143*
 
@@ -83,9 +83,21 @@ I normally use [httpbin](http://httpbin.org/) as the Web Server. A reliable, no-
 ./run_web_docker.sh
 ```
 
-## Client Host
+## 4. Client Host
 
-### HTTP Request
+### 4.1 Route
+
+Add a route to the web server through the router host.
+
+```
+ubuntu$ sudo ip route show
+
+...snip...
+
+172.31.24.143 via 172.31.20.57 dev eth0
+```
+
+### 4.2 HTTP Request
 
 Use cURL or your preferred HTTP client to perform a request to the web server. 
 
@@ -109,7 +121,7 @@ ubuntu$ curl -v 172.31.24.143
 < access-control-allow-credentials: true
 < x-envoy-upstream-service-time: 2
 ```
-## Envoy Logs
+## 5. Envoy Logs
 
 Envoy Logs for successful run.
 
@@ -190,9 +202,9 @@ Envoy Logs for successful run.
 [2019-08-17 22:50:42.267][13][debug][upstream] [external/envoy/source/common/upstream/cluster_manager_impl.cc:981] removing hosts for TLS cluster cluster1 removed 1
 ```
 
-## Cleaning
+## 6. Cleaning
 
-### Router
+### 6.1 Router
 
 ```
 ./clean_envoy_docker.sh
@@ -200,7 +212,7 @@ Envoy Logs for successful run.
 ./clean_iptables.sh
 ```
 
-### Web Server
+### 6.2 Web Server
 
 ```
 ./clean_web_docker.sh
