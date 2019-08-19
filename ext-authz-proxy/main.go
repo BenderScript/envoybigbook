@@ -25,7 +25,7 @@ func (a *AuthorizationServer) Check(ctx context.Context, req *auth.CheckRequest)
 	jsonString, _ := marshaler.MarshalToString(httpRequest)
 	var out bytes.Buffer
 	err := json.Indent(&out, []byte(jsonString), "", "  ")
-	if err != nil {
+	if err == nil {
 		println(out.String())
 
 		return &auth.CheckResponse{
@@ -53,6 +53,7 @@ func (a *AuthorizationServer) Check(ctx context.Context, req *auth.CheckRequest)
 			},
 		}, nil
 	} else {
+		println("Error encoding JSON" + err.Error())
 		return &auth.CheckResponse{
 			Status: &rpc.Status{
 				Code: int32(rpc.PERMISSION_DENIED),
