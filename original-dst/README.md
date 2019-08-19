@@ -35,7 +35,6 @@ root     32756  0.0  0.0   4504   780 ?        S    04:23   0:00 /bin/sh ./start
 root     32757  0.2  0.5 118568 21872 ?        Sl   04:23   0:00 envoy -c /etc/service-envoy.yaml --log-level debug
 ```
 
-
 ### 2.1 Socket Option SO_ORIGINAL_DST
 
 A small [python script](./original_destination.py) is included to demonstrate how proxies get the original IP:port from redirected connections. Assuming the IPTables rule below is in place, start this script as root instead of Envoy to get a deeper understanding of this socket option.
@@ -84,7 +83,21 @@ ubuntu$ curl -v 172.31.24.143
 < access-control-allow-credentials: true
 < x-envoy-upstream-service-time: 2
 ```
-## 6. Envoy Logs
+
+## 7. IPTables Statistics
+
+It can seen that only the first HTTP request (one packet) is redirected and that the proxied Envoy request does not match the IPTables.
+
+```
+ubuntu$ ./show_iptables.sh
+Chain OUTPUT (policy ACCEPT 8 packets, 760 bytes)
+ pkts bytes target     prot opt in     out     source               destination
+    0     0 DOCKER     all  --  *      *       0.0.0.0/0           !127.0.0.0/8          ADDRTYPE match dst-type LOCAL
+    1    60 REDIRECT   tcp  --  *      *       0.0.0.0/0            172.31.24.143        tcp dpt:80 ! owner UID match 0 redir ports 4999
+```
+
+
+## 8. Envoy Logs
 
 Envoy Logs for successful run.
 
@@ -166,7 +179,7 @@ Envoy Logs for successful run.
 [2019-08-13 07:17:45.510][7][debug][main] [source/server/server.cc:170] flushing stats
 ```
 
-## 7. Cleaning
+## 9. Cleaning
 
 ```
 ./clean_envoy_docker.sh
