@@ -6,7 +6,15 @@ In this example of we run a Forward Envoy Proxy that listens on port 4999 and di
 
 The practical use-case is to confine applications running on the same host as the envoy proxy by using it as a forward proxy. Applications can not communicate directly out due IPTables rules.
 
-## Envoy Docker
+## 1. Network Diagram
+
+The HTTP Client (cURL) and Envoy proxy share the same host. cURL runs as a native application and Envoy runs in a docker container
+
+A second host runs the web server
+
+![You need to see the network diagram][./img/envoy_network_original_dst.png]
+
+## 2. Envoy Docker
 
 Build and run the envoy container:
 
@@ -46,7 +54,7 @@ ubuntu$ curl -v www.cnn.com
 * Closing connection 0
 ```
 
-## IPTables
+## 3. IPTables
 
 Now install the IPtables redirect rules
 
@@ -54,7 +62,7 @@ Now install the IPtables redirect rules
 ./create_iptables.sh
 ```
 
-## HTTP Request
+## 4. HTTP Request
 
 Access to websites on ports 80 and 443 should go through the envoy proxy. Noticed the *x-envoy-upstream-service-time: 1* HTTP header
 
@@ -88,7 +96,7 @@ ubuntu$ curl -v www.cnn.com
 * Connection #0 to host www.cnn.com left intact
 ```
 
-## IPTables Stats
+## 5. IPTables Stats
 
 IPTables statistics should show the redirected packets
 
@@ -101,7 +109,7 @@ Chain OUTPUT (policy ACCEPT 17 packets, 1366 bytes)
     0     0 REDIRECT   tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            tcp dpt:443 redir ports 8443
 ```
 
-## Envoy Logs
+## 6. Envoy Logs
 
 Envoy Logs for successful run.
 
@@ -181,7 +189,7 @@ Envoy Logs for successful run.
 [2019-08-09 15:59:20.603][14][debug][main] [source/server/connection_handler_impl.cc:80] [C0] adding to cleanup list
 ```
 
-## Cleaning
+## 7. Cleaning
 
 ```
 ./clean_envoy_docker.sh
