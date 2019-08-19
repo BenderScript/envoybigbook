@@ -1,5 +1,7 @@
 # Tutorial
 
+This example shows Envoy proxy using an external authorization server.
+
 This is example is based on the [rate limit example](https://github.com/jbarratt/envoy_ratelimit_example)
 
 ## 2. Envoy Docker
@@ -25,7 +27,33 @@ go build
 ./simple-go-server
 ```
 
-## 5. Client 
+## 5. Client
+
+Response from Server on successful authorization
+
+```
+ubuntu$ curl -v localhost:4999
+* Rebuilt URL to: localhost:4999/
+*   Trying 127.0.0.1...
+* TCP_NODELAY set
+* Connected to localhost (127.0.0.1) port 4999 (#0)
+> GET / HTTP/1.1
+> Host: localhost:4999
+> User-Agent: curl/7.58.0
+> Accept: */*
+>
+< HTTP/1.1 200 OK
+< content-type: text/plain; charset=utf-8
+< x-content-type-options: nosniff
+< x-request-id: 833fb02c-3952-4e83-8e7d-f2abc16c6a1c
+< date: Mon, 19 Aug 2019 19:47:08 GMT
+< content-length: 14
+< x-envoy-upstream-service-time: 0
+< server: envoy
+<
+Hello, World!
+* Connection #0 to host localhost left intact
+```
 
 
 ## 6. External Server
