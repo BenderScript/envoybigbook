@@ -49,7 +49,7 @@ static_resources:
       lb_policy: round_robin
       hosts:
         - socket_address:
-            address: "host.docker.internal"
+            address: localhost
             port_value: 5000
     - name: ext-authz
       type: STRICT_DNS
@@ -61,7 +61,7 @@ static_resources:
               - endpoint:
                   address:
                     socket_address:
-                      address: "host.docker.internal"
+                      address: localhost
                       port_value: 5010
       # This timeout controls the initial TCP handshake timeout - not the timeout for the
       # entire request.

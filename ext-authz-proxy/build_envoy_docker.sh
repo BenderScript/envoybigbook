@@ -19,4 +19,4 @@ CONTAINER_NAME=ext-auth-proxy
 DOCKERFILE=envoy.Dockerfile
 
 docker build -f ${DOCKERFILE} -t ${CONTAINER_NAME} .
-docker run -d -p "${PORT}":"${PORT}" -p "${ADMIN_PORT}":"${ADMIN_PORT}" --name ${CONTAINER_NAME} ${CONTAINER_NAME}
+docker run -d --cap-add=NET_ADMIN --network host -p "${PORT}":"${PORT}" -p "${ADMIN_PORT}":"${ADMIN_PORT}" --name ${CONTAINER_NAME} ${CONTAINER_NAME}
