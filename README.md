@@ -29,7 +29,7 @@ This tutorial shows how to use a [original destination cluster](https://www.envo
 
 ### 1.4 [Transparent Proxy (TPROXY)](./tproxy-outgoing)
 
-Certainly the more tricky example but one that allows zero changes to client applications. 
+Certainly the more tricky example but one that does not require changes to client applications. 
 
 This tutorial shows how to use Envoy in [Transparent Proxy](https://www.envoyproxy.io/docs/envoy/latest/api-v2/api/v2/lds.proto#envoy-api-field-listener-transparent) mode. The distinguishing feature in this scenario is that there is no NAT.
 
