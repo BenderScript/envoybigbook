@@ -10,13 +10,13 @@ I decide to compile each example as best as I could to help others going through
 
 ### 1.1 Forward Proxy
 
-In this example of we run a Forward Envoy Proxy that listens on port 4999 and directs requests to their original destination. 
+In this example of we run a (Forward Envoy Proxy)[https://www.envoyproxy.io/docs/envoy/latest/configuration/http_filters/dynamic_forward_proxy_filter] that listens on port 4999 and directs requests to their original destination. 
 
 The practical use-case is to confine applications running on the same host as the envoy proxy by using it as a forward proxy. Applications can not communicate directly out due IPTables rules.
 
 ### 1.2 Explicit Proxy Config
 
-This example uses the same container as the Envoy Forward Proxy example but instead of using IPTables to redirect packets, we set HTTP Proxy environment variables.
+This example uses the same container as the Envoy Forward Proxy example but instead of using IPTables to redirect packets, we explicitly set HTTP Proxy environment variables.
 
 ### 1.3 Original Destination
 
@@ -25,6 +25,8 @@ This tutorial shows how to use a [original destination cluster](https://www.envo
 In this example the client making HTTP requests resides on the same host as the Envoy Proxy. A practical use of such deployment is to apply security policy to the client (or application) before proxying the connection.
 
 ### 1.4 Transparent Proxy (TPROXY)
+
+Certainly the more tricky example. 
 
 This tutorial shows how to use Envoy in [Transparent Proxy](https://www.envoyproxy.io/docs/envoy/latest/api-v2/api/v2/lds.proto#envoy-api-field-listener-transparent) mode. The distinguishing feature in this scenario is that there is no NAT.
 
