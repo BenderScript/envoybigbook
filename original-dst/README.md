@@ -181,8 +181,15 @@ Envoy Logs for successful run.
 
 ## 9. Cleaning
 
+### 9.1 Client
+
 ```
 ./clean_envoy_docker.sh
-./clean_web_docker.sh
 ./clean_iptables.sh
+```
+
+### 9.2 Web Server
+
+```
+./clean_web_docker.sh
 ```
