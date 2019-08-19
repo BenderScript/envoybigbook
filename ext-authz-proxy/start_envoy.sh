@@ -1,2 +1,2 @@
 #!/bin/sh
-envoy -c /etc/ext-authz-envoy.yaml --log-level debug
+envoy -c /etc/service-envoy.yaml --log-level debug
