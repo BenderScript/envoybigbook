@@ -5,4 +5,4 @@ CONTAINER_NAME=httpbin
 
 . clean_web_docker.sh
 
-docker run -d -p 5000:80 --name ${CONTAINER_NAME} kennethreitz/httpbin
+docker run -d -p 80:80 --name ${CONTAINER_NAME} kennethreitz/httpbin

@@ -8,23 +8,19 @@ sudo iptables -t mangle -A DIVERT -j ACCEPT
 
 # Verify
 
-#ubuntu:~$ sudo iptables --table mangle --list
+sudo iptables -t mangle --list
 
 # new rule & route for marked
 sudo ip rule add fwmark 0x1 lookup 100
 sudo ip route add local 0.0.0.0/0 dev lo table 100
 
 # Verify new rules & route
-# ip route show table 100
+sudo ip route show table 100
 
-#ubuntu:~$ ip rule list
-
-#ubuntu:~$ ip route show table all
+sudo ip rule list
 
 # sudo sysctl -w net.ipv4.conf.all.route_localnet=1
 
 sudo iptables -t mangle -A PREROUTING -p tcp --dport 80 -j TPROXY --tproxy-mark 0x1/0x1 --on-port 4999
 
 # sudo iptables -t mangle -I PREROUTING  -m limit --limit 2/min -j LOG
-
-sudo iptables -t mangle -nvL PREROUTING
