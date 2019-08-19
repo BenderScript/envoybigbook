@@ -11,6 +11,7 @@ Build and run Envoy Docker
 ```
 ./build_envoy_docker.sh
 ```
+
 ## 3. External Authorization Server
 
 ```

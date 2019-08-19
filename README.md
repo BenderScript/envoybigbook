@@ -10,36 +10,37 @@ Please be aware that all these examples were tested on **AWS Ubuntu 18.04**
 
 ## 1. Examples:
 
-### 1.1 Forward Proxy
+### 1.1 [Forward Proxy](./forward-proxy)
 
-In this example of we run a (Forward Envoy Proxy)[https://www.envoyproxy.io/docs/envoy/latest/configuration/http_filters/dynamic_forward_proxy_filter] that listens on port 4999 and directs requests to their original destination. 
+In this example of we run a [Forward Envoy Proxy](https://www.envoyproxy.io/docs/envoy/latest/configuration/http_filters/dynamic_forward_proxy_filter) that listens on port 4999 and directs requests to their original destination. 
 
 The practical use-case is to confine applications running on the same host as the envoy proxy by using it as a forward proxy. Applications can not communicate directly out due IPTables rules.
 
-### 1.2 Explicit Proxy Config
+### 1.2 [Explicit Proxy Config](./explicit-proxy-config)
 
 This example uses the same container as the Envoy Forward Proxy example but instead of using IPTables to redirect packets, we explicitly set HTTP Proxy environment variables.
 
-### 1.3 Original Destination
+### 1.3 [Original Destination](./original-dst)
+
+This tutorial is one of the most interesting to me because it can used in workload identification and policy by creating an administrative boundary around an application
 
 This tutorial shows how to use a [original destination cluster](https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/upstream/service_discovery#arch-overview-service-discovery-types-original-destination) to run Envoy Proxy as a forward proxy. There is no need to explicitly configure cluster IP addresses and ports since Envoy will proxy connections to the original destination IP:port  
 
-In this example the client making HTTP requests resides on the same host as the Envoy Proxy. A practical use of such deployment is to apply security policy to the client (or application) before proxying the connection.
 
-### 1.4 Transparent Proxy (TPROXY)
+### 1.4 [Transparent Proxy (TPROXY)](./tproxy-outgoing)
 
-Certainly the more tricky example. 
+Certainly the more tricky example but one that allows zero changes to client applications. 
 
 This tutorial shows how to use Envoy in [Transparent Proxy](https://www.envoyproxy.io/docs/envoy/latest/api-v2/api/v2/lds.proto#envoy-api-field-listener-transparent) mode. The distinguishing feature in this scenario is that there is no NAT.
 
 Transparent Proxy or TPROXY is a Linux Kernel feature without a lot of documentation. The common referenced documentation is the [original feature write-up](https://www.kernel.org/doc/Documentation/networking/tproxy.txt)
 
-### 1.5 Simple Front Proxy
+### 1.5 [Simple Front Proxy](./simple-front-proxy)
 
 In this example of we run a Envoy Proxy on that listens on port 4999 and directs to a server running on port 5000.
  
  The web server runs as a separate container from Envoy so any web server will do as long as it is listening on port 5000. 
 
-### 1.6 External Authorization
+### 1.6 [External Authorization](./ext-authz-proxy)
  
  Still working on this one. 
