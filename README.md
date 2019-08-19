@@ -6,6 +6,8 @@ Therefore it became clear that understanding Envoy and the IPTables associated w
 
 I decide to compile each example as best as I could to help others going through the same pains since documentation is very fragmented and at times conflicting. 
 
+Please be aware that all these examples were tested on **AWS Ubuntu 18.04**
+
 ## 1. Examples:
 
 ### 1.1 Forward Proxy
