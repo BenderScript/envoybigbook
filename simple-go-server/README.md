@@ -2,6 +2,8 @@
 
 In this simple example of we run a Web Server on port 5000 and add an IPTable rule to redirect port 4999 to port 5000.
 
+This is based on the [simple go web server](https://github.com/enricofoltran/simple-go-server)
+
 Build the code with:
 
 ```
