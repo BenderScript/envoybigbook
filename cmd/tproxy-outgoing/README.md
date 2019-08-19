@@ -90,6 +90,12 @@ I normally use [httpbin](http://httpbin.org/) as the Web Server. A reliable, no-
 Add a route to the web server through the router host.
 
 ```
+sudo ip route add 172.31.24.143/32 via 172.31.20.57 dev eth0
+```
+
+Check if route is present
+
+```
 ubuntu$ sudo ip route show
 
 ...snip...
