@@ -7,7 +7,7 @@ In this example the client making HTTP requests resides on the same host as the 
 This was tested on **Ubuntu 18.04**
 
 
-## Network Diagram
+## 1. Network Diagram
 
 The HTTP Client (cURL) and Envoy proxy share the same host. cURL runs as a native application and Envoy runs in a docker container
 
@@ -15,7 +15,7 @@ A second host runs the web server
 
 ![You need to see the network diagram][./img/envoy_network_original_dst.png]
 
-## Envoy Docker
+## 2. Envoy Docker
 
 Build and run Envoy Docker
 
@@ -36,11 +36,11 @@ root     32757  0.2  0.5 118568 21872 ?        Sl   04:23   0:00 envoy -c /etc/s
 ```
 
 
-### Socket Option SO_ORIGINAL_DST
+### 2.1 Socket Option SO_ORIGINAL_DST
 
 A small [python script](./original_destination.py) is included to demonstrate how proxies get the original IP:port from redirected connections. Assuming the IPTables rule below is in place, start this script as root instead of Envoy to get a deeper understanding of this socket option.
 
-## IPTables
+## 3. IPTables
 
 We redirect HTTP requests to Envoy's port, in this case 4999. It is important to notice that in order to avoid **infinite redirection loops**, we match on non-root user IDs. This assumes Envoy Proxy is run under the root user.
 
@@ -50,7 +50,7 @@ Add the IPTables rule.
 ./create_ip_tables.sh
 ```
 
-## Web Server
+## 4. Web Server
 
 The Web Server for this example was running on *172.31.24.143*
 
@@ -60,7 +60,7 @@ I normally use [httpbin](http://httpbin.org/) as the Web Server. A reliable, no-
 ./run_web_docker.sh
 ```
 
-## HTTP Request
+## 5. HTTP Request
 
 Use cURL or your preferred HTTP client to perform a request to the web server
 
@@ -84,7 +84,7 @@ ubuntu$ curl -v 172.31.24.143
 < access-control-allow-credentials: true
 < x-envoy-upstream-service-time: 2
 ```
-## Envoy Logs
+## 6. Envoy Logs
 
 Envoy Logs for successful run.
 
@@ -166,7 +166,7 @@ Envoy Logs for successful run.
 [2019-08-13 07:17:45.510][7][debug][main] [source/server/server.cc:170] flushing stats
 ```
 
-## Cleaning
+## 7. Cleaning
 
 ```
 ./clean_envoy_docker.sh

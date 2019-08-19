@@ -208,7 +208,6 @@ Envoy Logs for successful run.
 
 ```
 ./clean_envoy_docker.sh
-./clean_ubuntu_docker.sh
 ./clean_iptables.sh
 ```
 
