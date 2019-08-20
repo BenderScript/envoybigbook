@@ -101,7 +101,7 @@ ubuntu$ curl -v www.cnn.com
 IPTables statistics should show the redirected packets
 
 ```
-ubuntu@ip-172-31-22-139:~/identity/cmd/forward-proxy$ sudo iptables -t nat -nvL OUTPUT
+ubuntu$ sudo iptables -t nat -nvL OUTPUT
 Chain OUTPUT (policy ACCEPT 17 packets, 1366 bytes)
  pkts bytes target     prot opt in     out     source               destination
     0     0 DOCKER     all  --  *      *       0.0.0.0/0           !127.0.0.0/8          ADDRTYPE match dst-type LOCAL
