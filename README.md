@@ -29,9 +29,9 @@ This tutorial shows how to use a [original destination cluster](https://www.envo
 
 ### 1.4 [Transparent Proxy (TPROXY)](./tproxy-outgoing)
 
-Certainly the more tricky example but one that does not require changes to client applications. 
+Certainly the more challenging example but one that does not require changes to client applications. 
 
-This tutorial shows how to use Envoy in [Transparent Proxy](https://www.envoyproxy.io/docs/envoy/latest/api-v2/api/v2/lds.proto#envoy-api-field-listener-transparent) mode. The distinguishing feature in this scenario is that there is no NAT.
+This tutorial shows how to use Envoy in [Transparent Proxy](https://www.envoyproxy.io/docs/envoy/latest/api-v2/api/v2/lds.proto#envoy-api-field-listener-transparent) mode. The distinguishing feature in this scenario is that **there is no NAT**.
 
 Transparent Proxy or TPROXY is a Linux Kernel feature without a lot of documentation. The common referenced documentation is the [original feature write-up](https://www.kernel.org/doc/Documentation/networking/tproxy.txt)
 
@@ -43,4 +43,11 @@ In this example of we run a Envoy Proxy on that listens on port 4999 and directs
 
 ### 1.6 [External Authorization](./ext-authz-proxy)
  
- Still working on this one. 
+ This example shows Envoy proxy using an external authorization server to decide whether requests should be forwarded. This has quite a few practical examples such as:
+ 
+ * Client Identity (JWT)
+ * Workload Identity
+ * Policy Enforcement
+ * In-depth statistics
+
+This is example is based on the [rate limit example](https://github.com/jbarratt/envoy_ratelimit_example) 
