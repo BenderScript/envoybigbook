@@ -4,6 +4,12 @@ This example shows Envoy proxy using an external authorization server.
 
 This is example is based on the [rate limit example](https://github.com/jbarratt/envoy_ratelimit_example)
 
+## 1. Network Diagram
+
+In this tutorial everything runs on a single host in order to simplify the deployment.
+
+![You need to see the network diagram][./img/envoy_network.png]
+
 ## 2. Envoy Docker
 
 Build and run Envoy Docker
@@ -28,7 +34,13 @@ go build
 ./simple-go-server
 ```
 
-## 5. Client
+## 5. Client Request
+
+Issue the HTTP request
+
+```
+curl localhost:4999
+```
 
 Response from Server on successful authorization
 
@@ -82,6 +94,36 @@ ubuntu$ ./ext-authz-proxy
   "host": "localhost:4999",
   "protocol": "HTTP/1.1"
 }
+```
+
+Finally, the external authorization server will inject two headers on the response that should be added to the request by Envoy.
+
+```
+X-Ext-Auth-Id                           : curl
+X-Ext-Auth-Id-User                      : bob
+```
+
+
+
+## 7. Web Server
+
+We can see that the two headers that the external server injected were received by the web server.
+
+```
+HTTP Headers Received:
+======================
+Accept                                  : */*
+X-Forwarded-For                         : 172.31.22.139
+X-Forwarded-Proto                       : http
+X-Envoy-Internal                        : true
+X-Request-Id                            : 4832bad3-241d-4c95-9f22-79a539de5a32
+X-Envoy-Expected-Rq-Timeout-Ms          : 15000
+User-Agent                              : curl/7.58.0
+X-Ext-Auth-Id                           : curl
+X-Ext-Auth-Id-User                      : bob
+Content-Length                          : 0
+
+http: 2019/08/20 03:38:54 4832bad3-241d-4c95-9f22-79a539de5a32 GET / [::1]:57104 curl/7.58.0
 ```
 
 ## 7.Authorized Request Envoy Logs
