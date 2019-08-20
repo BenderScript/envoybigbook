@@ -14,7 +14,7 @@ Please be aware that all these examples were tested on **AWS Ubuntu 18.04**
 
 In this example of we run a [Forward Envoy Proxy](https://www.envoyproxy.io/docs/envoy/latest/configuration/http_filters/dynamic_forward_proxy_filter) that listens on port 4999 and directs requests to their original destination. 
 
-The practical use-case is to confine applications running on the same host as the envoy proxy by using it as a forward proxy. Applications can not communicate directly out due IPTables rules.
+The practical use-case is to confine applications running on the same host as the envoy proxy by using a combination of forward proxy and IPTables rules.
 
 ### 1.2 [Explicit Proxy Config](./explicit-proxy-config)
 
