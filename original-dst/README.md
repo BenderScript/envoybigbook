@@ -13,7 +13,7 @@ The HTTP Client (cURL) and Envoy proxy share the same host. cURL runs as a nativ
 
 A second host runs the web server
 
-![You need to see the network diagram][./img/envoy_network_original_dst.png]
+![You need to see the network diagram](./img/envoy_network_original_dst.png)
 
 ## 2. Envoy Docker
 

@@ -10,7 +10,7 @@ This was tested on **AWS** Ubuntu 18.04
 ## 1. Network Diagram
 
  
-![You need to see the network diagram][./img/envoy_network.png]
+![You need to see the network diagram](./img/envoy_network.png)
 
 
 ## 2. Router

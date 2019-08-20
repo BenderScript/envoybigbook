@@ -8,7 +8,7 @@ This is example is based on the [rate limit example](https://github.com/jbarratt
 
 In this tutorial everything runs on a single host in order to simplify the deployment.
 
-![You need to see the network diagram][./img/envoy_network.png]
+![You need to see the network diagram](./img/envoy_network.png)
 
 ## 2. Envoy Docker
 
