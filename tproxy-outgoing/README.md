@@ -28,10 +28,9 @@ Enable forwarding on the host. There are many good tutorials on the web on how t
 
 ### 2.2 Envoy Docker
 
-Build and run Envoy Docker
+Build and run Envoy Docker **before** you install TPROXY and add IPTable routes or docker build will fail because it will not be able to access the Internet.
 
 ```
-./build_ubuntu_docker.sh
 ./build_envoy_docker_net_admin.sh
 ```
 
@@ -63,6 +62,19 @@ I created this simple step-by-step script to help install TPROXY. If you get err
 
 ```
 ./tproxy_install.sh
+```
+
+You should see an output similar to this one:
+
+```
+CONFIG_NETFILTER_XT_TARGET_TPROXY=m
+xt_TPROXY.ko
+xt_TPROXY              20480  1
+nf_defrag_ipv6         36864  2 xt_socket,xt_TPROXY
+nf_defrag_ipv4         16384  3 nf_conntrack_ipv4,xt_socket,xt_TPROXY
+x_tables               40960  10 xt_conntrack,iptable_filter,xt_socket,xt_tcpudp,ipt_MASQUERADE,xt_addrtype,xt_TPROXY,ip_tables,iptable_mangle,xt_mark
+IPTables Socket option is present
+IPTables TPROXY option is present
 ```
 
 ### 2.4 IPTables, Route and Rule
