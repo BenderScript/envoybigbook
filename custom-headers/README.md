@@ -12,7 +12,39 @@ The HTTP Client (cURL), Envoy proxy and Web Server share the same host. cURL and
 
 ![You need to see the network diagram](./img/envoy_network.png)
 
-## 2. Envoy Docker
+## 2 Custom Headers
+
+We will (theoretically) add and append two different headers. Customer header documentation is [here](https://www.envoyproxy.io/docs/envoy/v1.11.1/configuration/http_conn_man/headers#custom-request-response-headers):
+
+First under route config
+
+```
+      request_headers_to_add:
+        - header:
+            key: "x-request-upstream"
+            value: "%UPSTREAM_REMOTE_ADDRESS%"
+          append: true
+        - header:
+            key: "x-request-downstream-combo"
+            value: "%START_TIME(%Y/%m/%dT%H:%M:%S%z %s)%"
+          append: true
+```
+
+Then append at virtual host level.
+
+```
+        - header:
+            key: "x-request-upstream"
+            value: "%UPSTREAM_REMOTE_ADDRESS%"
+          append: true
+        - header:
+            key: "x-request-downstream-combo"
+            value: "%DOWNSTREAM_LOCAL_ADDRESS%"
+          append: true
+``` 
+
+
+## 3. Envoy Docker
 
 Build and run the envoy container. The container runs with *--network host* in order to reach the web server running on the host.
 
@@ -20,7 +52,8 @@ Build and run the envoy container. The container runs with *--network host* in o
 ./build_envoy_docker.sh
 ``` 
 
-## 3. Web Server
+
+## 4. Web Server
 
 In this example we used the simple-go-server because we want to show the HTTP headers received. 
 
@@ -31,7 +64,7 @@ go build
 ./simple-go-server
 ```
 
-## 4. HTTP Request
+## 5. HTTP Request
 
 Now with the Web Server running issue the request. It will be processed by the Envoy Proxy container and directed to the web Server
 
@@ -59,7 +92,7 @@ Hello, World!
 * Connection #0 to host localhost left intact
 ```
 
-## 5. Web Server Logs
+## 6. Web Server Logs
 
 These are the headers received by the web server. Notice the headers we added. You might have noticed that X-Request-Upstream is missing. Unfortunately I do not know why and opened a [bug](https://github.com/envoyproxy/envoy/issues/8127) for it. 
 
@@ -88,7 +121,7 @@ http: 2019/09/03 17:56:12 c04dd4d1-96c5-4a14-bf33-331f4747fff5 GET / [::1]:58086
 
 ```
 
-## 6. Envoy Logs
+## 7. Envoy Logs
 
 Envoy Logs from a successful run.
 
@@ -149,7 +182,7 @@ Envoy Logs from a successful run.
 [2019-09-03 17:56:24.041][8][debug][main] [source/server/server.cc:170] flushing stats
 
 ```
-## 7. Cleaning
+## 8. Cleaning
 
 ```
 ./clean_envoy_docker.sh
