@@ -55,8 +55,6 @@ This is example is based on the [rate limit example](https://github.com/jbarratt
 
 ### 1.7 [Custom HTTP Headers](./custom-headers)
  
- Still **WIP!**
- 
  This example shows Envoy proxy adding custom HTTP headers to a request. I want to understand how to add more than one header and also append to an existing header. It turns out Envoy appends by a copy of the header with a different value.
  
  My goal would be to use this setup in the external authz with workload identity in the near future.
