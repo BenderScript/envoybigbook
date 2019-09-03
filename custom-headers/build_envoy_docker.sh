@@ -16,10 +16,12 @@ else
   ADMIN_PORT="${ENVOY_ADMIN_PORT}"
 fi
 
-CONTAINER_NAME=simple-proxy
+CONTAINER_NAME=custom-headers
 DOCKERFILE=envoy.Dockerfile
 
 docker build -f ${DOCKERFILE} -t ${CONTAINER_NAME} .
-# docker run -d --network host -p "${PORT}":"${PORT}" -p "${ADMIN_PORT}":"${ADMIN_PORT}" --name ${CONTAINER_NAME} ${CONTAINER_NAME}
-docker run -d -p "${PORT}":"${PORT}" -p "${ADMIN_PORT}":"${ADMIN_PORT}" --name ${CONTAINER_NAME} ${CONTAINER_NAME}
+docker run -d --network host -p "${PORT}":"${PORT}" -p "${ADMIN_PORT}":"${ADMIN_PORT}" --name ${CONTAINER_NAME} ${CONTAINER_NAME}
+#
+# For MaC we do not need network host due to the "host.docker.internal" goodie.
+# docker run -d -p "${PORT}":"${PORT}" -p "${ADMIN_PORT}":"${ADMIN_PORT}" --name ${CONTAINER_NAME} ${CONTAINER_NAME}
 

@@ -64,7 +64,7 @@ static_resources:
       lb_policy: round_robin
       hosts:
         - socket_address:
-            address: "host.docker.internal"
+            address: localhost
             port_value: 5000
 admin:
   access_log_path: "/dev/null"
