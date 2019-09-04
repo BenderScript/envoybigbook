@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net"
 
@@ -21,6 +22,9 @@ type AuthorizationServer struct{}
 func (a *AuthorizationServer) Check(ctx context.Context, req *auth.CheckRequest) (*auth.CheckResponse, error) {
 
 	httpRequest := req.Attributes.Request.Http
+	socketAddress := req.Attributes.Source.Address.GetSocketAddress()
+	fmt.Printf("Source IP:port %s:%d\n", socketAddress.GetAddress(), socketAddress.GetPortValue())
+
 	marshaler := jsonpb.Marshaler{}
 	jsonString, _ := marshaler.MarshalToString(httpRequest)
 	var out bytes.Buffer

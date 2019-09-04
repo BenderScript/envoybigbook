@@ -17,6 +17,26 @@ fi
 
 CONTAINER_NAME=ext-auth-proxy
 DOCKERFILE=envoy.Dockerfile
+ENVOY_FILE=service-envoy.yaml
 
-docker build -f ${DOCKERFILE} -t ${CONTAINER_NAME} .
-docker run -d --cap-add=NET_ADMIN --network host -p "${PORT}":"${PORT}" -p "${ADMIN_PORT}":"${ADMIN_PORT}" --name ${CONTAINER_NAME} ${CONTAINER_NAME}
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    ENVOY_FILE=service-envoy-mac.yaml
+fi
+
+docker build -f ${DOCKERFILE} -t ${CONTAINER_NAME} . --build-arg envoy_file="${ENVOY_FILE}"
+
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+    EXTRA_FLAGS="--cap-add=NET_ADMIN --network host"
+fi
+
+# NULL expansion
+${EXTRA_FLAGS:+"${EXTRA_FLAGS}"}
+
+DOCKER_COMMAND="docker run -d ${EXTRA_FLAGS} -p \"${PORT}\":\"${PORT}\" -p \"${ADMIN_PORT}\":\"${ADMIN_PORT}\" --name \"${CONTAINER_NAME}\" \"${CONTAINER_NAME}\""
+
+# printf "%s\n" "${DOCKER_COMMAND}"
+
+eval "${DOCKER_COMMAND}"
+
+
+
