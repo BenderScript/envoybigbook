@@ -30,9 +30,9 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
 fi
 
 # NULL expansion
-${EXTRA_FLAGS:+"${EXTRA_FLAGS}"}
+# ${EXTRA_FLAGS:-"${EXTRA_FLAGS}"}
 
-DOCKER_COMMAND="docker run -d ${EXTRA_FLAGS} -p \"${PORT}\":\"${PORT}\" -p \"${ADMIN_PORT}\":\"${ADMIN_PORT}\" --name \"${CONTAINER_NAME}\" \"${CONTAINER_NAME}\""
+DOCKER_COMMAND="docker run -d ${EXTRA_FLAGS:-${EXTRA_FLAGS}} -p \"${PORT}\":\"${PORT}\" -p \"${ADMIN_PORT}\":\"${ADMIN_PORT}\" --name \"${CONTAINER_NAME}\" \"${CONTAINER_NAME}\""
 
 # printf "%s\n" "${DOCKER_COMMAND}"
 
