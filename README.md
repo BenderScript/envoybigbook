@@ -2,9 +2,9 @@
 
 I had a dream! I tried to understand Kubernetes/Istio's data plane in detail...unsuccessfully. Every time I would ask a deeper question the answer would inevitably be "oh, this is done by Envoy and IPTables, but I do not know what goes under the hood". 
 
-Therefore it became clear that understanding Envoy and the IPTables associated with each proxy scenario was key to understanding data plane and provisioning in Kubernetes. During this journey it dawned on me how amazing is Envoy Proxy.
+Therefore it became clear that understanding Envoy and the IPTables associated with each scenario was key to understanding data plane and provisioning in Kubernetes. During this journey it dawned on me how amazing is Envoy Proxy.
 
-I decide to compile each example as best as I could to help others going through the same pains since documentation is very fragmented and at times conflicting. 
+I decide to compile each example as best as I could to help others going through the same pains since documentation is at times fragmented and incomplete. 
 
 Please be aware that all these examples were tested on **AWS Ubuntu 18.04**
 
