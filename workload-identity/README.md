@@ -1,8 +1,7 @@
 # Tutorial
 
-This example shows Envoy proxy using an external authorization server.
+This example demonstrates how to use Envoy P{roxy and Authz server to create a soft boundary around an application in order to create or provide workload identity.
 
-This is example is based on the [rate limit example](https://github.com/jbarratt/envoy_ratelimit_example)
 
 ## 1. Network Diagram
 
@@ -39,7 +38,7 @@ go build
 Issue the HTTP request
 
 ```
-curl localhost:4999
+curl -v localhost:4999
 ```
 
 Response from Server on successful authorization
@@ -58,8 +57,8 @@ ubuntu$ curl -v localhost:4999
 < HTTP/1.1 200 OK
 < content-type: text/plain; charset=utf-8
 < x-content-type-options: nosniff
-< x-request-id: 833fb02c-3952-4e83-8e7d-f2abc16c6a1c
-< date: Mon, 19 Aug 2019 19:47:08 GMT
+< x-request-id: 772d5638-1ba5-4b83-a5a9-5c3b9e6132ae
+< date: Mon, 09 Sep 2019 17:48:17 GMT
 < content-length: 14
 < x-envoy-upstream-service-time: 0
 < server: envoy
@@ -69,15 +68,20 @@ Hello, World!
 ```
 
 
-## 6. External Server
+## 6. WorkLoad Identity
 
-HTTP Headers received by external authorization server. One or more of these could be used together with other sources of data.
+The external server identifies the application through its source port. In this case *curl* with path */usr/bin* 
 
 ```
-ubuntu$ ./ext-authz-proxy
-2019/08/19 19:46:59 listening on [::]:5010
+ubuntu$ ./workload-identity
+2019/09/09 17:35:40 listening on [::]:5010
+Source IP:port 127.0.0.1:51254
+Process name: Curl
+Process Exe: /usr/bin/curl
+Process User: ubuntu
+Process State: ESTABLISHED
 {
-  "id": "13224899753382986542",
+  "id": "8573178212158092554",
   "method": "GET",
   "headers": {
     ":authority": "localhost:4999",
@@ -86,9 +90,9 @@ ubuntu$ ./ext-authz-proxy
     "accept": "*/*",
     "user-agent": "curl/7.58.0",
     "x-envoy-internal": "true",
-    "x-forwarded-for": "172.31.22.139",
+    "x-forwarded-for": "172.31.24.143",
     "x-forwarded-proto": "http",
-    "x-request-id": "833fb02c-3952-4e83-8e7d-f2abc16c6a1c"
+    "x-request-id": "dc0f9eb0-7c5d-49bc-b05f-46ee9cb9a48d"
   },
   "path": "/",
   "host": "localhost:4999",
@@ -113,17 +117,18 @@ We can see that the two headers that the external server injected were received 
 HTTP Headers Received:
 ======================
 Accept                                  : */*
-X-Forwarded-For                         : 172.31.22.139
-X-Forwarded-Proto                       : http
-X-Envoy-Internal                        : true
-X-Request-Id                            : 4832bad3-241d-4c95-9f22-79a539de5a32
+X-Forwarded-For                         : 172.31.24.143
+X-Request-Id                            : dc0f9eb0-7c5d-49bc-b05f-46ee9cb9a48d
 X-Envoy-Expected-Rq-Timeout-Ms          : 15000
 User-Agent                              : curl/7.58.0
+X-Forwarded-Proto                       : http
+X-Envoy-Internal                        : true
 X-Ext-Auth-Id                           : curl
 X-Ext-Auth-Id-User                      : bob
 Content-Length                          : 0
 
-http: 2019/08/20 03:38:54 4832bad3-241d-4c95-9f22-79a539de5a32 GET / [::1]:57104 curl/7.58.0
+http: 2019/09/09 17:35:46 dc0f9eb0-7c5d-49bc-b05f-46ee9cb9a48d GET / [::1]:59462 curl/7.58.0
+
 ```
 
 ## 7.Authorized Request Envoy Logs
@@ -131,19 +136,18 @@ http: 2019/08/20 03:38:54 4832bad3-241d-4c95-9f22-79a539de5a32 GET / [::1]:57104
 Envoy logs from a request that was authorized
 
 ```
-[2019-08-19 19:47:08.653][7][debug][main] [source/server/server.cc:170] flushing stats
-[2019-08-19 19:47:08.916][14][debug][main] [source/server/connection_handler_impl.cc:280] [C4] new connection
-[2019-08-19 19:47:08.916][14][debug][http] [source/common/http/conn_manager_impl.cc:246] [C4] new stream
-[2019-08-19 19:47:08.917][14][debug][http] [source/common/http/conn_manager_impl.cc:619] [C4][S13224899753382986542] request headers complete (end_stream=true):
+[2019-09-09 17:35:45.998][14][debug][main] [source/server/connection_handler_impl.cc:280] [C2] new connection
+[2019-09-09 17:35:45.998][14][debug][http] [source/common/http/conn_manager_impl.cc:246] [C2] new stream
+[2019-09-09 17:35:45.998][14][debug][http] [source/common/http/conn_manager_impl.cc:619] [C2][S8573178212158092554] request headers complete (end_stream=true):
 ':authority', 'localhost:4999'
 ':path', '/'
 ':method', 'GET'
 'user-agent', 'curl/7.58.0'
 'accept', '*/*'
 
-[2019-08-19 19:47:08.917][14][debug][http] [source/common/http/conn_manager_impl.cc:1111] [C4][S13224899753382986542] request end stream
-[2019-08-19 19:47:08.917][14][debug][router] [source/common/router/router.cc:401] [C0][S7092837421431301450] cluster 'ext-authz' match for URL '/envoy.service.auth.v2.Authorization/Check'
-[2019-08-19 19:47:08.917][14][debug][router] [source/common/router/router.cc:514] [C0][S7092837421431301450] router decoding headers:
+[2019-09-09 17:35:45.998][14][debug][http] [source/common/http/conn_manager_impl.cc:1111] [C2][S8573178212158092554] request end stream
+[2019-09-09 17:35:45.998][14][debug][router] [source/common/router/router.cc:401] [C0][S18116284449863842796] cluster 'ext-authz' match for URL '/envoy.service.auth.v2.Authorization/Check'
+[2019-09-09 17:35:45.998][14][debug][router] [source/common/router/router.cc:514] [C0][S18116284449863842796] router decoding headers:
 ':method', 'POST'
 ':path', '/envoy.service.auth.v2.Authorization/Check'
 ':authority', 'ext-authz'
@@ -152,83 +156,82 @@ Envoy logs from a request that was authorized
 'grpc-timeout', '200m'
 'content-type', 'application/grpc'
 'x-envoy-internal', 'true'
-'x-forwarded-for', '172.31.22.139'
+'x-forwarded-for', '172.31.24.143'
 'x-envoy-expected-rq-timeout-ms', '200'
 
-[2019-08-19 19:47:08.917][14][debug][client] [source/common/http/codec_client.cc:26] [C5] connecting
-[2019-08-19 19:47:08.917][14][debug][connection] [source/common/network/connection_impl.cc:704] [C5] connecting to [::1]:5010
-[2019-08-19 19:47:08.917][14][debug][connection] [source/common/network/connection_impl.cc:713] [C5] connection in progress
-[2019-08-19 19:47:08.917][14][debug][http2] [source/common/http/http2/codec_impl.cc:899] [C5] setting stream-level initial window size to 268435456
-[2019-08-19 19:47:08.917][14][debug][http2] [source/common/http/http2/codec_impl.cc:921] [C5] updating connection-level initial window size to 268435456
-[2019-08-19 19:47:08.917][14][debug][pool] [source/common/http/conn_pool_base.cc:20] queueing request due to no available connections
-[2019-08-19 19:47:08.917][14][debug][connection] [source/common/network/connection_impl.cc:552] [C5] connected
-[2019-08-19 19:47:08.917][14][debug][client] [source/common/http/codec_client.cc:64] [C5] connected
-[2019-08-19 19:47:08.917][14][debug][pool] [source/common/http/http2/conn_pool.cc:96] [C5] creating stream
-[2019-08-19 19:47:08.917][14][debug][router] [source/common/router/router.cc:1503] [C0][S7092837421431301450] pool ready
-[2019-08-19 19:47:08.918][14][debug][router] [source/common/router/router.cc:994] [C0][S7092837421431301450] upstream headers complete: end_stream=false
-[2019-08-19 19:47:08.918][14][debug][http] [source/common/http/async_client_impl.cc:91] async http request response headers (end_stream=false):
+[2019-09-09 17:35:45.998][14][debug][client] [source/common/http/codec_client.cc:26] [C3] connecting
+[2019-09-09 17:35:45.998][14][debug][connection] [source/common/network/connection_impl.cc:704] [C3] connecting to [::1]:5010
+[2019-09-09 17:35:45.998][14][debug][connection] [source/common/network/connection_impl.cc:713] [C3] connection in progress
+[2019-09-09 17:35:45.999][14][debug][http2] [source/common/http/http2/codec_impl.cc:899] [C3] setting stream-level initial window size to 268435456
+[2019-09-09 17:35:45.999][14][debug][http2] [source/common/http/http2/codec_impl.cc:921] [C3] updating connection-level initial window size to 268435456
+[2019-09-09 17:35:45.999][14][debug][pool] [source/common/http/conn_pool_base.cc:20] queueing request due to no available connections
+[2019-09-09 17:35:45.999][14][debug][connection] [source/common/network/connection_impl.cc:552] [C3] connected
+[2019-09-09 17:35:45.999][14][debug][client] [source/common/http/codec_client.cc:64] [C3] connected
+[2019-09-09 17:35:45.999][14][debug][pool] [source/common/http/http2/conn_pool.cc:96] [C3] creating stream
+[2019-09-09 17:35:45.999][14][debug][router] [source/common/router/router.cc:1503] [C0][S18116284449863842796] pool ready
+[2019-09-09 17:35:46.037][14][debug][router] [source/common/router/router.cc:994] [C0][S18116284449863842796] upstream headers complete: end_stream=false
+[2019-09-09 17:35:46.037][14][debug][http] [source/common/http/async_client_impl.cc:91] async http request response headers (end_stream=false):
 ':status', '200'
 'content-type', 'application/grpc'
-'x-envoy-upstream-service-time', '1'
+'x-envoy-upstream-service-time', '38'
 
-[2019-08-19 19:47:08.918][14][debug][client] [source/common/http/codec_client.cc:95] [C5] response complete
-[2019-08-19 19:47:08.918][14][debug][pool] [source/common/http/http2/conn_pool.cc:233] [C5] destroying stream: 0 remaining
-[2019-08-19 19:47:08.918][14][debug][http] [source/common/http/async_client_impl.cc:106] async http request response trailers:
+[2019-09-09 17:35:46.037][14][debug][client] [source/common/http/codec_client.cc:95] [C3] response complete
+[2019-09-09 17:35:46.037][14][debug][pool] [source/common/http/http2/conn_pool.cc:233] [C3] destroying stream: 0 remaining
+[2019-09-09 17:35:46.037][14][debug][http] [source/common/http/async_client_impl.cc:106] async http request response trailers:
 'grpc-status', '0'
 'grpc-message', ''
 
-[2019-08-19 19:47:08.918][14][debug][router] [source/common/router/router.cc:401] [C4][S13224899753382986542] cluster 'simple-server' match for URL '/'
-[2019-08-19 19:47:08.918][14][debug][router] [source/common/router/router.cc:514] [C4][S13224899753382986542] router decoding headers:
+[2019-09-09 17:35:46.037][14][debug][router] [source/common/router/router.cc:401] [C2][S8573178212158092554] cluster 'simple-server' match for URL '/'
+[2019-09-09 17:35:46.037][14][debug][router] [source/common/router/router.cc:514] [C2][S8573178212158092554] router decoding headers:
 ':authority', 'localhost:4999'
 ':path', '/'
 ':method', 'GET'
 ':scheme', 'http'
 'user-agent', 'curl/7.58.0'
 'accept', '*/*'
-'x-forwarded-for', '172.31.22.139'
+'x-forwarded-for', '172.31.24.143'
 'x-forwarded-proto', 'http'
 'x-envoy-internal', 'true'
-'x-request-id', '833fb02c-3952-4e83-8e7d-f2abc16c6a1c'
+'x-request-id', 'dc0f9eb0-7c5d-49bc-b05f-46ee9cb9a48d'
 'x-ext-auth-id', 'curl'
 'x-ext-auth-id-user', 'bob'
 'x-envoy-expected-rq-timeout-ms', '15000'
 
-[2019-08-19 19:47:08.918][14][debug][pool] [source/common/http/http1/conn_pool.cc:88] creating a new connection
-[2019-08-19 19:47:08.918][14][debug][client] [source/common/http/codec_client.cc:26] [C6] connecting
-[2019-08-19 19:47:08.918][14][debug][connection] [source/common/network/connection_impl.cc:704] [C6] connecting to [::1]:5000
-[2019-08-19 19:47:08.918][14][debug][connection] [source/common/network/connection_impl.cc:713] [C6] connection in progress
-[2019-08-19 19:47:08.918][14][debug][pool] [source/common/http/conn_pool_base.cc:20] queueing request due to no available connections
-[2019-08-19 19:47:08.918][14][debug][http2] [source/common/http/http2/codec_impl.cc:732] [C5] stream closed: 0
-[2019-08-19 19:47:08.918][14][debug][connection] [source/common/network/connection_impl.cc:552] [C6] connected
-[2019-08-19 19:47:08.918][14][debug][client] [source/common/http/codec_client.cc:64] [C6] connected
-[2019-08-19 19:47:08.918][14][debug][pool] [source/common/http/http1/conn_pool.cc:241] [C6] attaching to next request
-[2019-08-19 19:47:08.918][14][debug][router] [source/common/router/router.cc:1503] [C4][S13224899753382986542] pool ready
-[2019-08-19 19:47:08.919][14][debug][router] [source/common/router/router.cc:994] [C4][S13224899753382986542] upstream headers complete: end_stream=false
-[2019-08-19 19:47:08.919][14][debug][http] [source/common/http/conn_manager_impl.cc:1378] [C4][S13224899753382986542] encoding headers via codec (end_stream=false):
+[2019-09-09 17:35:46.037][14][debug][pool] [source/common/http/http1/conn_pool.cc:88] creating a new connection
+[2019-09-09 17:35:46.037][14][debug][client] [source/common/http/codec_client.cc:26] [C4] connecting
+[2019-09-09 17:35:46.037][14][debug][connection] [source/common/network/connection_impl.cc:704] [C4] connecting to [::1]:5000
+[2019-09-09 17:35:46.037][14][debug][connection] [source/common/network/connection_impl.cc:713] [C4] connection in progress
+[2019-09-09 17:35:46.037][14][debug][pool] [source/common/http/conn_pool_base.cc:20] queueing request due to no available connections
+[2019-09-09 17:35:46.037][14][debug][http2] [source/common/http/http2/codec_impl.cc:732] [C3] stream closed: 0
+[2019-09-09 17:35:46.037][14][debug][connection] [source/common/network/connection_impl.cc:552] [C4] connected
+[2019-09-09 17:35:46.037][14][debug][client] [source/common/http/codec_client.cc:64] [C4] connected
+[2019-09-09 17:35:46.037][14][debug][pool] [source/common/http/http1/conn_pool.cc:241] [C4] attaching to next request
+[2019-09-09 17:35:46.037][14][debug][router] [source/common/router/router.cc:1503] [C2][S8573178212158092554] pool ready
+[2019-09-09 17:35:46.038][14][debug][router] [source/common/router/router.cc:994] [C2][S8573178212158092554] upstream headers complete: end_stream=false
+[2019-09-09 17:35:46.038][14][debug][http] [source/common/http/conn_manager_impl.cc:1378] [C2][S8573178212158092554] encoding headers via codec (end_stream=false):
 ':status', '200'
 'content-type', 'text/plain; charset=utf-8'
 'x-content-type-options', 'nosniff'
-'x-request-id', '833fb02c-3952-4e83-8e7d-f2abc16c6a1c'
-'date', 'Mon, 19 Aug 2019 19:47:08 GMT'
+'x-request-id', 'dc0f9eb0-7c5d-49bc-b05f-46ee9cb9a48d'
+'date', 'Mon, 09 Sep 2019 17:35:45 GMT'
 'content-length', '14'
 'x-envoy-upstream-service-time', '0'
 'server', 'envoy'
 
-[2019-08-19 19:47:08.919][14][debug][client] [source/common/http/codec_client.cc:95] [C6] response complete
-[2019-08-19 19:47:08.919][14][debug][pool] [source/common/http/http1/conn_pool.cc:198] [C6] response complete
-[2019-08-19 19:47:08.919][14][debug][pool] [source/common/http/http1/conn_pool.cc:236] [C6] moving to ready
-[2019-08-19 19:47:08.920][14][debug][connection] [source/common/network/connection_impl.cc:520] [C4] remote close
-[2019-08-19 19:47:08.920][14][debug][connection] [source/common/network/connection_impl.cc:190] [C4] closing socket: 0
-[2019-08-19 19:47:08.920][14][debug][main] [source/server/connection_handler_impl.cc:80] [C4] adding to cleanup list
-[2019-08-19 19:47:13.657][7][debug][main] [source/server/server.cc:170] flushing stats
-[2019-08-19 19:47:18.660][7][debug][main] [source/server/server.cc:170] flushing stats
-[2019-08-19 19:47:23.665][7][debug][main] [source/server/server.cc:170] flushing stats
-[2019-08-19 19:47:23.919][14][debug][connection] [source/common/network/connection_impl.cc:520] [C6] remote close
-[2019-08-19 19:47:23.919][14][debug][connection] [source/common/network/connection_impl.cc:190] [C6] closing socket: 0
-[2019-08-19 19:47:23.919][14][debug][client] [source/common/http/codec_client.cc:82] [C6] disconnect. resetting 0 pending requests
-[2019-08-19 19:47:23.919][14][debug][pool] [source/common/http/http1/conn_pool.cc:129] [C6] client disconnected, failure reason:
-[2019-08-19 19:47:28.668][7][debug][main] [source/server/server.cc:170] flushing stats
-[2019-08-19 19:47:33.670][7][debug][main] [source/server/server.cc:170] flushing stats
+[2019-09-09 17:35:46.038][14][debug][client] [source/common/http/codec_client.cc:95] [C4] response complete
+[2019-09-09 17:35:46.038][14][debug][pool] [source/common/http/http1/conn_pool.cc:198] [C4] response complete
+[2019-09-09 17:35:46.038][14][debug][pool] [source/common/http/http1/conn_pool.cc:236] [C4] moving to ready
+[2019-09-09 17:35:46.038][14][debug][connection] [source/common/network/connection_impl.cc:520] [C2] remote close
+[2019-09-09 17:35:46.038][14][debug][connection] [source/common/network/connection_impl.cc:190] [C2] closing socket: 0
+[2019-09-09 17:35:46.038][14][debug][main] [source/server/connection_handler_impl.cc:80] [C2] adding to cleanup list
+[2019-09-09 17:35:47.626][8][debug][main] [source/server/server.cc:170] flushing stats
+[2019-09-09 17:35:52.627][8][debug][main] [source/server/server.cc:170] flushing stats
+[2019-09-09 17:35:57.632][8][debug][main] [source/server/server.cc:170] flushing stats
+[2019-09-09 17:36:01.040][14][debug][connection] [source/common/network/connection_impl.cc:520] [C4] remote close
+[2019-09-09 17:36:01.040][14][debug][connection] [source/common/network/connection_impl.cc:190] [C4] closing socket: 0
+[2019-09-09 17:36:01.040][14][debug][client] [source/common/http/codec_client.cc:82] [C4] disconnect. resetting 0 pending requests
+[2019-09-09 17:36:01.040][14][debug][pool] [source/common/http/http1/conn_pool.cc:129] [C4] client disconnected, failure reason:
+[2019-09-09 17:36:02.635][8][debug][main] [source/server/server.cc:170] flushing stats
 ```
 
 
