@@ -47,14 +47,14 @@ func (a *AuthorizationServer) Check(ctx context.Context, req *auth.CheckRequest)
 					Headers: []*core.HeaderValueOption{
 						{
 							Header: &core.HeaderValue{
-								Key:   "x-ext-auth-id",
-								Value: "curl",
+								Key:   "x-workload-id",
+								Value: "process.Name",
 							},
 						},
 						{
 							Header: &core.HeaderValue{
-								Key:   "x-ext-auth-id-user",
-								Value: "bob",
+								Key:   "x-workload-user",
+								Value: "process.User",
 							},
 						},
 					},

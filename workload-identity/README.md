@@ -1,6 +1,6 @@
 # Tutorial
 
-This example demonstrates how to use Envoy P{roxy and Authz server to create a soft boundary around an application in order to create or provide workload identity.
+This example demonstrates how to use Envoy P{roxy and Authz server to create a soft boundary around an application in order to create or provide **workload identity**.
 
 
 ## 1. Network Diagram
