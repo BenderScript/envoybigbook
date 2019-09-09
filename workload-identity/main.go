@@ -48,13 +48,13 @@ func (a *AuthorizationServer) Check(ctx context.Context, req *auth.CheckRequest)
 						{
 							Header: &core.HeaderValue{
 								Key:   "x-workload-id",
-								Value: "process.Name",
+								Value: process.Name,
 							},
 						},
 						{
 							Header: &core.HeaderValue{
 								Key:   "x-workload-user",
-								Value: "process.User",
+								Value: process.User,
 							},
 						},
 					},
