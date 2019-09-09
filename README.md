@@ -43,7 +43,7 @@ In this example of we run a Envoy Proxy on that listens on port 4999 and directs
 
 ### 1.6 [External Authorization](./ext-authz-proxy)
  
- This example shows Envoy proxy using an external authorization server to decide whether requests should be forwarded. This has quite a few practical examples such as:
+ This example shows Envoy proxy using an external authorization server to decide whether requests should be forwarded. This has quite a few practical applications such as:
  
  * Client Identity (JWT)
  * Workload Identity
@@ -55,6 +55,18 @@ This is example is based on the [rate limit example](https://github.com/jbarratt
 
 ### 1.7 [Custom HTTP Headers](./custom-headers)
  
- This example shows Envoy proxy adding custom HTTP headers to a request. I want to understand how to add more than one header and also append to an existing header. It turns out Envoy appends by a copy of the header with a different value.
+ This example shows Envoy proxy adding custom HTTP headers to a request. I want to understand how to add more than one header and also append to an existing header. It turns out Envoy appends by adding a copy of the header with a different value.
  
- My goal would be to use this setup in the external authz with workload identity in the near future.
+ My goal would be to use this setup in the external authz with workload identity.
+ 
+### 1.8 [Workload-Identity](./workload-identity)
+
+This example demonstrates how to use Envoy Proxy and Authz server to create a soft boundary around an **existing** applications in order to create or provide **workload identity**. The operative word here is **existing**. There are many practical applications such as:
+
+* Policy
+* Telemetry
+* Audit
+* Security
+
+ 
+

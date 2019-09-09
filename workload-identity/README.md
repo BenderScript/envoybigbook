@@ -1,6 +1,6 @@
 # Tutorial
 
-This example demonstrates how to use Envoy P{roxy and Authz server to create a soft boundary around an application in order to create or provide **workload identity**.
+This example demonstrates how to use Envoy Proxy and Authz server to create a soft boundary around an application in order to create or provide **workload identity**.
 
 
 ## 1. Network Diagram
@@ -75,13 +75,13 @@ The external server identifies the application through its source port. In this 
 ```
 ubuntu$ ./workload-identity
 2019/09/09 17:35:40 listening on [::]:5010
-Source IP:port 127.0.0.1:51254
+Source IP:port 127.0.0.1:51276
 Process name: Curl
 Process Exe: /usr/bin/curl
 Process User: ubuntu
 Process State: ESTABLISHED
 {
-  "id": "8573178212158092554",
+  "id": "840746502713701496",
   "method": "GET",
   "headers": {
     ":authority": "localhost:4999",
@@ -92,7 +92,7 @@ Process State: ESTABLISHED
     "x-envoy-internal": "true",
     "x-forwarded-for": "172.31.24.143",
     "x-forwarded-proto": "http",
-    "x-request-id": "dc0f9eb0-7c5d-49bc-b05f-46ee9cb9a48d"
+    "x-request-id": "dc5e7e65-720b-46a1-90e7-0fa17e10d71e"
   },
   "path": "/",
   "host": "localhost:4999",
@@ -103,11 +103,9 @@ Process State: ESTABLISHED
 Finally, the external authorization server will inject two headers on the response that should be added to the request by Envoy.
 
 ```
-X-Ext-Auth-Id                           : curl
-X-Ext-Auth-Id-User                      : bob
+X-Workload-Id                           : Curl
+X-Workload-User                         : ubuntu
 ```
-
-
 
 ## 7. Web Server
 
@@ -118,16 +116,16 @@ HTTP Headers Received:
 ======================
 Accept                                  : */*
 X-Forwarded-For                         : 172.31.24.143
-X-Request-Id                            : dc0f9eb0-7c5d-49bc-b05f-46ee9cb9a48d
-X-Envoy-Expected-Rq-Timeout-Ms          : 15000
-User-Agent                              : curl/7.58.0
 X-Forwarded-Proto                       : http
 X-Envoy-Internal                        : true
-X-Ext-Auth-Id                           : curl
-X-Ext-Auth-Id-User                      : bob
+X-Envoy-Expected-Rq-Timeout-Ms          : 15000
 Content-Length                          : 0
+X-Request-Id                            : dc5e7e65-720b-46a1-90e7-0fa17e10d71e
+X-Workload-Id                           : Curl
+X-Workload-User                         : ubuntu
+User-Agent                              : curl/7.58.0
 
-http: 2019/09/09 17:35:46 dc0f9eb0-7c5d-49bc-b05f-46ee9cb9a48d GET / [::1]:59462 curl/7.58.0
+http: 2019/09/09 17:55:21 dc5e7e65-720b-46a1-90e7-0fa17e10d71e GET / [::1]:59484 curl/7.58.0
 
 ```
 
