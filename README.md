@@ -68,5 +68,6 @@ This example demonstrates how to use Envoy Proxy and Authz server to create a so
 * Audit
 * Security
 
- 
+ ### 1.9 [Workload-Identity-AWS](./workload-identity-aws)
 
+WIP!
