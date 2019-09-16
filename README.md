@@ -70,8 +70,6 @@ This example demonstrates how to use Envoy Proxy and Authz server to create a so
 
  ### 1.9 [Workload-Identity-AWS](./workload-identity-aws)
 
-WIP!
-
 This example demonstrates how to use Envoy Proxy and Authz server to create a soft boundary around an application in order to create or provide **workload identity** within an AWS EC2 deployment.
 
-More specifically, it integrates AWS EC2 information into the application identity. It seems clear to me that any serious workload identity solution needs to incorporate a cloud's provider information in order to be deployed everywhere.
+More specifically, it integrates AWS EC2 instance and user metadata into the application identity. It seems clear to me that any serious workload identity solution needs to incorporate a cloud provider's information in order to be deployed seamlessly.
