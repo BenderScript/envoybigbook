@@ -51,37 +51,40 @@ Add the IPTables rule.
 
 ## 4. Web Server
 
-The Web Server for this example was running on *172.31.24.143*
-
-I normally use [httpbin](http://httpbin.org/) as the Web Server. A reliable, no-hassle, perfect-for-testing web server.
-
-```
-./run_web_docker.sh
-```
+For this example you can use any web server on the Internet. I used 172.31.24.143 as an example in the diagram but capture logs accessing *www.cnn.com*
 
 ## 5. HTTP Request
 
 Use cURL or your preferred HTTP client to perform a request to the web server
 
 ```
-ubuntu$ curl -v 172.31.24.143
-* Rebuilt URL to: 172.31.24.143/
-*   Trying 172.31.24.143...
+ubuntu$ curl -v www.cnn.com
+* Rebuilt URL to: www.cnn.com/
+*   Trying 151.101.41.67...
 * TCP_NODELAY set
-* Connected to 172.31.24.143 (172.31.24.143) port 80 (#0)
+* Connected to www.cnn.com (151.101.41.67) port 80 (#0)
 > GET / HTTP/1.1
-> Host: 172.31.24.143
+> Host: www.cnn.com
 > User-Agent: curl/7.58.0
 > Accept: */*
 >
-< HTTP/1.1 200 OK
+< HTTP/1.1 301 Moved Permanently
 < server: envoy
-< date: Tue, 13 Aug 2019 07:02:21 GMT
-< content-type: text/html; charset=utf-8
-< content-length: 9593
-< access-control-allow-origin: *
-< access-control-allow-credentials: true
-< x-envoy-upstream-service-time: 2
+< retry-after: 0
+< content-length: 0
+< cache-control: public, max-age=600
+< location: https://www.cnn.com/
+< accept-ranges: bytes
+< date: Thu, 19 Sep 2019 16:41:44 GMT
+< via: 1.1 varnish
+< set-cookie: countryCode=US; Domain=.cnn.com; Path=/
+< set-cookie: geoData=san jose|CA|95123|US|NA|-700|broadband; Domain=.cnn.com; Path=/
+< x-served-by: cache-sjc3128-SJC
+< x-cache: HIT
+< x-cache-hits: 0
+< x-envoy-upstream-service-time: 1
+<
+* Connection #0 to host www.cnn.com left intact
 ```
 
 ## 7. IPTables Statistics
@@ -90,10 +93,10 @@ It can seen that only the first HTTP request (one packet) is redirected and that
 
 ```
 ubuntu$ ./show_iptables.sh
-Chain OUTPUT (policy ACCEPT 8 packets, 760 bytes)
+Chain OUTPUT (policy ACCEPT 9 packets, 966 bytes)
  pkts bytes target     prot opt in     out     source               destination
     0     0 DOCKER     all  --  *      *       0.0.0.0/0           !127.0.0.0/8          ADDRTYPE match dst-type LOCAL
-    1    60 REDIRECT   tcp  --  *      *       0.0.0.0/0            172.31.24.143        tcp dpt:80 ! owner UID match 0 redir ports 4999
+    1    60 REDIRECT   tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            tcp dpt:80 ! owner UID match 0 redir ports 4999
 ```
 
 
@@ -102,94 +105,93 @@ Chain OUTPUT (policy ACCEPT 8 packets, 760 bytes)
 Envoy Logs for successful run.
 
 ```
-[2019-08-13 07:17:34.772][13][debug][filter] [source/extensions/filters/listener/original_dst/original_dst.cc:18] original_dst: New connection accepted
-[2019-08-13 07:17:34.772][13][debug][main] [source/server/connection_handler_impl.cc:280] [C4] new connection
-[2019-08-13 07:17:34.772][13][debug][http] [source/common/http/conn_manager_impl.cc:246] [C4] new stream
-[2019-08-13 07:17:34.772][13][debug][http] [source/common/http/conn_manager_impl.cc:600] [C4][S4932201214277595902] request headers complete (end_stream=true):
-':authority', '172.31.24.143'
+[2019-09-19 16:41:45.115][14][debug][filter] [source/extensions/filters/listener/original_dst/original_dst.cc:18] original_dst: New connection accepted
+[2019-09-19 16:41:45.115][14][debug][main] [source/server/connection_handler_impl.cc:280] [C0] new connection
+[2019-09-19 16:41:45.115][14][debug][http] [source/common/http/conn_manager_impl.cc:246] [C0] new stream
+[2019-09-19 16:41:45.116][14][debug][http] [source/common/http/conn_manager_impl.cc:619] [C0][S5387317192340225778] request headers complete (end_stream=true):
+':authority', 'www.cnn.com'
 ':path', '/'
 ':method', 'GET'
 'user-agent', 'curl/7.58.0'
 'accept', '*/*'
 
-[2019-08-13 07:17:34.772][13][debug][http] [source/common/http/conn_manager_impl.cc:1092] [C4][S4932201214277595902] request end stream
-[2019-08-13 07:17:34.772][13][debug][router] [source/common/router/router.cc:401] [C4][S4932201214277595902] cluster 'cluster1' match for URL '/'
-[2019-08-13 07:17:34.772][13][debug][upstream] [source/common/upstream/original_dst_cluster.cc:87] Created host 172.31.24.143:80.
-[2019-08-13 07:17:34.772][13][debug][router] [source/common/router/router.cc:514] [C4][S4932201214277595902] router decoding headers:
-':authority', '172.31.24.143'
+[2019-09-19 16:41:45.116][14][debug][http] [source/common/http/conn_manager_impl.cc:1111] [C0][S5387317192340225778] request end stream
+[2019-09-19 16:41:45.116][14][debug][router] [source/common/router/router.cc:401] [C0][S5387317192340225778] cluster 'cluster1' match for URL '/'
+[2019-09-19 16:41:45.116][14][debug][upstream] [source/common/upstream/original_dst_cluster.cc:87] Created host 151.101.41.67:80.
+[2019-09-19 16:41:45.116][14][debug][router] [source/common/router/router.cc:514] [C0][S5387317192340225778] router decoding headers:
+':authority', 'www.cnn.com'
 ':path', '/'
 ':method', 'GET'
 ':scheme', 'http'
 'user-agent', 'curl/7.58.0'
 'accept', '*/*'
 'x-forwarded-proto', 'http'
-'x-request-id', '2434b83e-e425-4304-a7ed-ec87740d1280'
+'x-request-id', 'f1a14007-ea40-43b0-ac37-ed1c5d9d335a'
 'x-envoy-expected-rq-timeout-ms', '15000'
 
-[2019-08-13 07:17:34.772][13][debug][pool] [source/common/http/http1/conn_pool.cc:88] creating a new connection
-[2019-08-13 07:17:34.772][13][debug][client] [source/common/http/codec_client.cc:26] [C5] connecting
-[2019-08-13 07:17:34.772][13][debug][connection] [source/common/network/connection_impl.cc:702] [C5] connecting to 172.31.24.143:80
-[2019-08-13 07:17:34.772][13][debug][connection] [source/common/network/connection_impl.cc:711] [C5] connection in progress
-[2019-08-13 07:17:34.772][13][debug][pool] [source/common/http/conn_pool_base.cc:20] queueing request due to no available connections
-[2019-08-13 07:17:34.772][7][debug][upstream] [source/common/upstream/cluster_manager_impl.cc:999] membership update for TLS cluster cluster1 added 1 removed 0
-[2019-08-13 07:17:34.772][7][debug][upstream] [source/common/upstream/original_dst_cluster.cc:41] Adding host 172.31.24.143:80.
-[2019-08-13 07:17:34.772][13][debug][upstream] [source/common/upstream/cluster_manager_impl.cc:999] membership update for TLS cluster cluster1 added 1 removed 0
-[2019-08-13 07:17:34.772][13][debug][connection] [source/common/network/connection_impl.cc:550] [C5] connected
-[2019-08-13 07:17:34.773][13][debug][client] [source/common/http/codec_client.cc:64] [C5] connected
-[2019-08-13 07:17:34.773][13][debug][pool] [source/common/http/http1/conn_pool.cc:241] [C5] attaching to next request
-[2019-08-13 07:17:34.773][13][debug][router] [source/common/router/router.cc:1503] [C4][S4932201214277595902] pool ready
-[2019-08-13 07:17:34.773][14][debug][upstream] [source/common/upstream/cluster_manager_impl.cc:999] membership update for TLS cluster cluster1 added 1 removed 0
-[2019-08-13 07:17:34.773][14][debug][upstream] [source/common/upstream/original_dst_cluster.cc:41] Adding host 172.31.24.143:80.
-[2019-08-13 07:17:34.775][13][debug][router] [source/common/router/router.cc:994] [C4][S4932201214277595902] upstream headers complete: end_stream=false
-[2019-08-13 07:17:34.775][13][debug][http] [source/common/http/conn_manager_impl.cc:1359] [C4][S4932201214277595902] encoding headers via codec (end_stream=false):
-':status', '200'
+[2019-09-19 16:41:45.117][14][debug][pool] [source/common/http/http1/conn_pool.cc:88] creating a new connection
+[2019-09-19 16:41:45.117][14][debug][client] [source/common/http/codec_client.cc:26] [C1] connecting
+[2019-09-19 16:41:45.117][14][debug][connection] [source/common/network/connection_impl.cc:704] [C1] connecting to 151.101.41.67:80
+[2019-09-19 16:41:45.117][14][debug][connection] [source/common/network/connection_impl.cc:713] [C1] connection in progress
+[2019-09-19 16:41:45.117][14][debug][pool] [source/common/http/conn_pool_base.cc:20] queueing request due to no available connections
+[2019-09-19 16:41:45.117][7][debug][upstream] [source/common/upstream/cluster_manager_impl.cc:999] membership update for TLS cluster cluster1 added 1 removed 0
+[2019-09-19 16:41:45.117][7][debug][upstream] [source/common/upstream/original_dst_cluster.cc:41] Adding host 151.101.41.67:80.
+[2019-09-19 16:41:45.117][13][debug][upstream] [source/common/upstream/cluster_manager_impl.cc:999] membership update for TLS cluster cluster1 added 1 removed 0
+[2019-09-19 16:41:45.117][13][debug][upstream] [source/common/upstream/original_dst_cluster.cc:41] Adding host 151.101.41.67:80.
+[2019-09-19 16:41:45.117][14][debug][upstream] [source/common/upstream/cluster_manager_impl.cc:999] membership update for TLS cluster cluster1 added 1 removed 0
+[2019-09-19 16:41:45.117][14][debug][connection] [source/common/network/connection_impl.cc:552] [C1] connected
+[2019-09-19 16:41:45.117][14][debug][client] [source/common/http/codec_client.cc:64] [C1] connected
+[2019-09-19 16:41:45.117][14][debug][pool] [source/common/http/http1/conn_pool.cc:241] [C1] attaching to next request
+[2019-09-19 16:41:45.117][14][debug][router] [source/common/router/router.cc:1503] [C0][S5387317192340225778] pool ready
+[2019-09-19 16:41:45.118][14][debug][client] [source/common/http/codec_client.cc:95] [C1] response complete
+[2019-09-19 16:41:45.118][14][debug][router] [source/common/router/router.cc:994] [C0][S5387317192340225778] upstream headers complete: end_stream=true
+[2019-09-19 16:41:45.118][14][debug][http] [source/common/http/conn_manager_impl.cc:1378] [C0][S5387317192340225778] encoding headers via codec (end_stream=true):
+':status', '301'
 'server', 'envoy'
-'date', 'Tue, 13 Aug 2019 07:17:34 GMT'
-'content-type', 'text/html; charset=utf-8'
-'content-length', '9593'
-'access-control-allow-origin', '*'
-'access-control-allow-credentials', 'true'
-'x-envoy-upstream-service-time', '2'
+'retry-after', '0'
+'content-length', '0'
+'cache-control', 'public, max-age=600'
+'location', 'https://www.cnn.com/'
+'accept-ranges', 'bytes'
+'date', 'Thu, 19 Sep 2019 16:41:44 GMT'
+'via', '1.1 varnish'
+'set-cookie', 'countryCode=US; Domain=.cnn.com; Path=/'
+'set-cookie', 'geoData=san jose|CA|95123|US|NA|-700|broadband; Domain=.cnn.com; Path=/'
+'x-served-by', 'cache-sjc3128-SJC'
+'x-cache', 'HIT'
+'x-cache-hits', '0'
+'x-envoy-upstream-service-time', '1'
 
-[2019-08-13 07:17:34.775][13][debug][client] [source/common/http/codec_client.cc:95] [C5] response complete
-[2019-08-13 07:17:34.775][13][debug][pool] [source/common/http/http1/conn_pool.cc:198] [C5] response complete
-[2019-08-13 07:17:34.775][13][debug][pool] [source/common/http/http1/conn_pool.cc:236] [C5] moving to ready
-[2019-08-13 07:17:34.776][13][debug][connection] [source/common/network/connection_impl.cc:518] [C4] remote close
-[2019-08-13 07:17:34.776][13][debug][connection] [source/common/network/connection_impl.cc:188] [C4] closing socket: 0
-[2019-08-13 07:17:34.776][13][debug][main] [source/server/connection_handler_impl.cc:80] [C4] adding to cleanup list
-[2019-08-13 07:17:35.471][7][debug][upstream] [source/common/upstream/original_dst_cluster.cc:170] Cleaning up stale original dst hosts.
-[2019-08-13 07:17:35.471][7][debug][upstream] [source/common/upstream/original_dst_cluster.cc:173] Keeping active host 172.31.24.143:80.
-[2019-08-13 07:17:35.502][7][debug][main] [source/server/server.cc:170] flushing stats
-[2019-08-13 07:17:36.776][13][debug][connection] [source/common/network/connection_impl.cc:518] [C5] remote close
-[2019-08-13 07:17:36.776][13][debug][connection] [source/common/network/connection_impl.cc:188] [C5] closing socket: 0
-[2019-08-13 07:17:36.776][13][debug][client] [source/common/http/codec_client.cc:82] [C5] disconnect. resetting 0 pending requests
-[2019-08-13 07:17:36.776][13][debug][pool] [source/common/http/http1/conn_pool.cc:129] [C5] client disconnected, failure reason:
-[2019-08-13 07:17:40.478][7][debug][upstream] [source/common/upstream/original_dst_cluster.cc:170] Cleaning up stale original dst hosts.
-[2019-08-13 07:17:40.478][7][debug][upstream] [source/common/upstream/original_dst_cluster.cc:177] Removing stale host 172.31.24.143:80.
-[2019-08-13 07:17:40.478][7][debug][upstream] [source/common/upstream/cluster_manager_impl.cc:999] membership update for TLS cluster cluster1 added 0 removed 1
-[2019-08-13 07:17:40.478][7][debug][upstream] [source/common/upstream/original_dst_cluster.cc:36] Removing host 172.31.24.143:80.
-[2019-08-13 07:17:40.478][7][debug][upstream] [source/common/upstream/cluster_manager_impl.cc:981] removing hosts for TLS cluster cluster1 removed 1
-[2019-08-13 07:17:40.478][14][debug][upstream] [source/common/upstream/cluster_manager_impl.cc:999] membership update for TLS cluster cluster1 added 0 removed 1
-[2019-08-13 07:17:40.478][14][debug][upstream] [source/common/upstream/original_dst_cluster.cc:36] Removing host 172.31.24.143:80.
-[2019-08-13 07:17:40.478][14][debug][upstream] [source/common/upstream/cluster_manager_impl.cc:981] removing hosts for TLS cluster cluster1 removed 1
-[2019-08-13 07:17:40.478][13][debug][upstream] [source/common/upstream/cluster_manager_impl.cc:999] membership update for TLS cluster cluster1 added 0 removed 1
-[2019-08-13 07:17:40.478][13][debug][upstream] [source/common/upstream/original_dst_cluster.cc:36] Removing host 172.31.24.143:80.
-[2019-08-13 07:17:40.478][13][debug][upstream] [source/common/upstream/cluster_manager_impl.cc:981] removing hosts for TLS cluster cluster1 removed 1
-[2019-08-13 07:17:40.506][7][debug][main] [source/server/server.cc:170] flushing stats
-[2019-08-13 07:17:45.510][7][debug][main] [source/server/server.cc:170] flushing stats
+[2019-09-19 16:41:45.118][14][debug][pool] [source/common/http/http1/conn_pool.cc:198] [C1] response complete
+[2019-09-19 16:41:45.118][14][debug][pool] [source/common/http/http1/conn_pool.cc:203] [C1] saw upstream close connection
+[2019-09-19 16:41:45.118][14][debug][connection] [source/common/network/connection_impl.cc:101] [C1] closing data_to_write=0 type=1
+[2019-09-19 16:41:45.118][14][debug][connection] [source/common/network/connection_impl.cc:190] [C1] closing socket: 1
+[2019-09-19 16:41:45.118][14][debug][client] [source/common/http/codec_client.cc:82] [C1] disconnect. resetting 0 pending requests
+[2019-09-19 16:41:45.118][14][debug][pool] [source/common/http/http1/conn_pool.cc:129] [C1] client disconnected, failure reason:
+[2019-09-19 16:41:45.119][14][debug][connection] [source/common/network/connection_impl.cc:520] [C0] remote close
+[2019-09-19 16:41:45.119][14][debug][connection] [source/common/network/connection_impl.cc:190] [C0] closing socket: 0
+[2019-09-19 16:41:45.119][14][debug][main] [source/server/connection_handler_impl.cc:80] [C0] adding to cleanup list
+[2019-09-19 16:41:49.688][7][debug][main] [source/server/server.cc:170] flushing stats
+[2019-09-19 16:41:49.688][7][debug][upstream] [source/common/upstream/original_dst_cluster.cc:170] Cleaning up stale original dst hosts.
+[2019-09-19 16:41:49.688][7][debug][upstream] [source/common/upstream/original_dst_cluster.cc:173] Keeping active host 151.101.41.67:80.
+[2019-09-19 16:41:54.692][7][debug][upstream] [source/common/upstream/original_dst_cluster.cc:170] Cleaning up stale original dst hosts.
+[2019-09-19 16:41:54.692][7][debug][upstream] [source/common/upstream/original_dst_cluster.cc:177] Removing stale host 151.101.41.67:80.
+[2019-09-19 16:41:54.692][7][debug][upstream] [source/common/upstream/cluster_manager_impl.cc:999] membership update for TLS cluster cluster1 added 0 removed 1
+[2019-09-19 16:41:54.692][14][debug][upstream] [source/common/upstream/cluster_manager_impl.cc:999] membership update for TLS cluster cluster1 added 0 removed 1
+[2019-09-19 16:41:54.692][14][debug][upstream] [source/common/upstream/original_dst_cluster.cc:36] Removing host 151.101.41.67:80.
+[2019-09-19 16:41:54.692][7][debug][upstream] [source/common/upstream/original_dst_cluster.cc:36] Removing host 151.101.41.67:80.
+[2019-09-19 16:41:54.692][7][debug][upstream] [source/common/upstream/cluster_manager_impl.cc:981] removing hosts for TLS cluster cluster1 removed 1
+[2019-09-19 16:41:54.692][7][debug][main] [source/server/server.cc:170] flushing stats
+[2019-09-19 16:41:54.692][14][debug][upstream] [source/common/upstream/cluster_manager_impl.cc:981] removing hosts for TLS cluster cluster1 removed 1
+[2019-09-19 16:41:54.692][13][debug][upstream] [source/common/upstream/cluster_manager_impl.cc:999] membership update for TLS cluster cluster1 added 0 removed 1
+[2019-09-19 16:41:54.692][13][debug][upstream] [source/common/upstream/original_dst_cluster.cc:36] Removing host 151.101.41.67:80.
+[2019-09-19 16:41:54.692][13][debug][upstream] [source/common/upstream/cluster_manager_impl.cc:981] removing hosts for TLS cluster cluster1 removed 1
+[2019-09-19 16:41:59.700][7][debug][main] [source/server/server.cc:170] flushing stats
 ```
 
 ## 9. Cleaning
 
-### 9.1 Client
-
 ```
 ./clean_envoy_docker.sh
 ./clean_iptables.sh
-```
-
-### 9.2 Web Server
-
-```
-./clean_web_docker.sh
 ```
