@@ -9,12 +9,6 @@ else
   PORT="${ENVOY_PORT}"
 fi
 
-if [ -z "${ENVOY_HTTPS_PORT}" ]; then
-  HTTPS_PORT=8443
-else
-  HTTPS_PORT="${ENVOY_HTTPS_PORT}"
-fi
-
 if [ -z "${ENVOY_ADMIN_PORT}" ]; then
   ADMIN_PORT=19000
 else
@@ -23,6 +17,27 @@ fi
 
 CONTAINER_NAME=envoy-forward
 DOCKERFILE=envoy.Dockerfile
+ENVOY_FILE=service-envoy.yaml
 
-docker build -f ${DOCKERFILE} -t ${CONTAINER_NAME} .
-docker run -d -p "${PORT}":"${PORT}" -p "${HTTPS_PORT}":"${HTTPS_PORT}" -p "${ADMIN_PORT}":"${ADMIN_PORT}" --name ${CONTAINER_NAME} ${CONTAINER_NAME}
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    printf "%s\n" "IPTables support is needed"
+    exit 1
+fi
+
+docker build -f ${DOCKERFILE} -t ${CONTAINER_NAME} . --build-arg envoy_file="${ENVOY_FILE}"
+
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+    EXTRA_FLAGS="--cap-add=NET_ADMIN --network host"
+fi
+
+# NULL expansion
+# ${EXTRA_FLAGS:-"${EXTRA_FLAGS}"}
+
+DOCKER_COMMAND="docker run -d ${EXTRA_FLAGS:-${EXTRA_FLAGS}} -p \"${PORT}\":\"${PORT}\" -p \"${ADMIN_PORT}\":\"${ADMIN_PORT}\" --name \"${CONTAINER_NAME}\" \"${CONTAINER_NAME}\""
+
+# printf "%s\n" "${DOCKER_COMMAND}"
+
+eval "${DOCKER_COMMAND}"
+
+
+
