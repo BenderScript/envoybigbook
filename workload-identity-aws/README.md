@@ -115,7 +115,7 @@ X-Workload-Zone                         : us-west-1c
 
 ## 7. Web Server
 
-We can see that the two headers that the external server injected were received by the web server.
+We can see that the five headers that the external server injected were received by the web server.
 
 ```
 HTTP Headers Received:
@@ -243,6 +243,10 @@ Envoy logs from a request that was authorized
 [2019-09-16 22:27:46.502][13][debug][pool] [source/common/http/http1/conn_pool.cc:129] [C2] client disconnected, failure reason:
 [2019-09-16 22:27:49.683][7][debug][main] [source/server/server.cc:170] flushing stats
 ```
+
+## 8. Ramblings and Good thoughts
+
+Creating a soft boundary and capture application name, path, instance-id, zone and many others is just ridiculously good. Since the this is a soft boundary, the application is not disturbed but at the same time you get audit, telemetry, stats, you name it.
 
 
 
