@@ -25,11 +25,14 @@ static_resources:
                   name: local_route
                   request_headers_to_add:
                     - header:
+                        key: "x-request-downstream"
+                        value: "%DOWNSTREAM_LOCAL_ADDRESS%"
+                    - header:
                         key: "x-request-upstream"
                         value: "%UPSTREAM_REMOTE_ADDRESS%"
                       append: true
                     - header:
-                        key: "x-request-downstream-combo"
+                        key: "x-request-start-time"
                         value: "%START_TIME(%Y/%m/%dT%H:%M:%S%z %s)%"
                       append: true
                   virtual_hosts:
@@ -43,11 +46,7 @@ static_resources:
                             cluster: cluster1
                       request_headers_to_add:
                         - header:
-                            key: "x-request-upstream"
-                            value: "%UPSTREAM_REMOTE_ADDRESS%"
-                          append: true
-                        - header:
-                            key: "x-request-downstream-combo"
+                            key: "x-request-downstream"
                             value: "%DOWNSTREAM_LOCAL_ADDRESS%"
                           append: true
                 http_filters:
