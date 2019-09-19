@@ -73,3 +73,9 @@ This example demonstrates how to use Envoy Proxy and Authz server to create a so
 This example demonstrates how to use Envoy Proxy and Authz server to create a soft boundary around an application in order to create or provide **workload identity** within an AWS EC2 deployment.
 
 More specifically, it integrates AWS EC2 instance and user metadata into the application identity. It seems clear to me that any serious workload identity solution needs to incorporate a cloud provider's information in order to be deployed seamlessly and provide useful information.
+
+### 1.10 [TCP-Proxy](./tcp-proxy)
+
+This example demonstrates just a plain TCP Proxy. Interestingly I could not find official documentation on how to configure it, but managed to dig an example from a github issue.
+
+Even more interesting is that a simple TCP Proxy can be used for HTTP traffic if there is no interest in HTTP specific functionality. Based on the logs we can see the amount of processing is much lower and therefore performance should be much higher.
