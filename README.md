@@ -22,7 +22,7 @@ This example uses the same container as the Envoy Forward Proxy example but inst
 
 ### 1.3 [Original Destination](./original-dst)
 
-This tutorial is one of the most interesting to me because it can used in workload identification and policy by creating an administrative boundary around an application
+This tutorial is one of the most interesting to me because it lays the ground work to understand workload identification and policy by creating an administrative boundary around an application
 
 This tutorial shows how to use a [original destination cluster](https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/upstream/service_discovery#arch-overview-service-discovery-types-original-destination) to run Envoy Proxy as a forward proxy. There is no need to explicitly configure cluster IP addresses and ports since Envoy will proxy connections to the original destination IP:port  
 
@@ -55,21 +55,21 @@ This is example is based on the [rate limit example](https://github.com/jbarratt
 
 ### 1.7 [Custom HTTP Headers](./custom-headers)
  
- This example shows Envoy proxy adding custom HTTP headers to a request. I want to understand how to add more than one header and also append to an existing header. It turns out Envoy appends by adding a copy of the header with a different value.
+ This example shows Envoy proxy adding custom HTTP headers to a request. I wanted to understand how to add more than one header and also append to an existing header. It turns out Envoy appends by adding a copy of the header with a different value.
  
- My goal would be to use this setup in the external authz with workload identity.
+ My goal is to use this setup in the external authz with workload identity.
  
 ### 1.8 [Workload-Identity](./workload-identity)
 
-This example demonstrates how to use Envoy Proxy and Authz server to create a soft boundary around an **existing** applications in order to create or provide **workload identity**. The operative word here is **existing**. There are many practical applications such as:
+This example demonstrates how to use Envoy Proxy and Authz server to create a soft boundary around an **existing** application in order to create or provide **workload identity**. The operative word here is **existing**. There are many practical applications such as:
 
 * Policy
 * Telemetry
 * Audit
 * Security
 
- ### 1.9 [Workload-Identity-AWS](./workload-identity-aws)
+### 1.9 [Workload-Identity-AWS](./workload-identity-aws)
 
 This example demonstrates how to use Envoy Proxy and Authz server to create a soft boundary around an application in order to create or provide **workload identity** within an AWS EC2 deployment.
 
-More specifically, it integrates AWS EC2 instance and user metadata into the application identity. It seems clear to me that any serious workload identity solution needs to incorporate a cloud provider's information in order to be deployed seamlessly.
+More specifically, it integrates AWS EC2 instance and user metadata into the application identity. It seems clear to me that any serious workload identity solution needs to incorporate a cloud provider's information in order to be deployed seamlessly and provide useful information.
