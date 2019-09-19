@@ -1,11 +1,11 @@
 # Tutorial
 
+This was tested on **AWS Ubuntu 18.04**
+
+
 This tutorial shows how to use a [original destination cluster](https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/upstream/service_discovery#arch-overview-service-discovery-types-original-destination) to run Envoy Proxy as a forward proxy. There is no need to explicitly configure cluster IP addresses and ports since Envoy will proxy connections to the original destination IP:port  
 
 In this example the client making HTTP requests resides on the same host as the Envoy Proxy. A practical use of such deployment is to apply security policy to the client (or application) before proxying the connection.
-
-This was tested on **Ubuntu 18.04**
-
 
 ## 1. Network Diagram
 
