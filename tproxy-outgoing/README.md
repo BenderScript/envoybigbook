@@ -13,7 +13,7 @@ This was tested on **AWS** Ubuntu 18.04
 ![You need to see the network diagram](./img/envoy_network.png)
 
 
-## 2. Router
+## 2. Router Host
 
 The router host performs the following functions:
 
@@ -84,6 +84,14 @@ In order for transparent proxy to work a set of IPTables rules, routes and rules
 ```
 ./create_ip_tables.sh
 ```
+
+### 2.5 Disable IP source and Destination Check
+
+If you are running this example in AWS you need to disable IP source and destination check so the host can accept packet not directed to its interface.
+
+![Disable anti-spoofing](./img/aws_change_ip_src_dest_check.png)
+
+
 
 ## 3. Web Server
 

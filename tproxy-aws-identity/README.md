@@ -85,6 +85,12 @@ In order for transparent proxy to work a set of IPTables rules, routes and rules
 ./create_ip_tables.sh
 ```
 
+### 2.5 Disable IP source and Destination Check
+
+If you are running this example in AWS you need to disable IP source and destination check so the host can accept packet not directed to its interface.
+
+![Disable anti-spoofing](./img/aws_change_ip_src_dest_check.png)
+
 ## 3. Web Server
 
 The Web Server for this example was running on *172.31.24.143*
@@ -222,14 +228,24 @@ Envoy Logs for successful run.
 
 ## 6. Cleaning
 
-### 6.1 Router
+### 6.1 Client
+
+You should remove the route that directs web traffic through the router.
+
+In this example:
+
+```
+sudo ip route del 172.31.24.143/32 via 172.31.20.57 dev eth0
+```
+
+### 6.2 Router
 
 ```
 ./clean_envoy_docker.sh
 ./clean_iptables.sh
 ```
 
-### 6.2 Web Server
+### 6.3 Web Server
 
 ```
 ./clean_web_docker.sh
