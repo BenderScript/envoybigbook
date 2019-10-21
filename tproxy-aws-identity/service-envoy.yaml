@@ -33,6 +33,14 @@ static_resources:
                           route:
                             cluster: cluster1
                 http_filters:
+                  # Authz filters must be the first one for it to work
+                  # https://www.envoyproxy.io/docs/envoy/latest/api-v2/config/filter/http/ext_authz/v2/ext_authz.proto#envoy-api-msg-config-filter-http-ext-authz-v2-extauthz
+                  - name: envoy.ext_authz
+                    config:
+                      failure_mode_allow: false
+                      grpc_service:
+                        envoy_grpc:
+                          cluster_name: ext-authz
                   - name: envoy.router
                     typed_config: {}
       listener_filters:
@@ -44,6 +52,21 @@ static_resources:
       connect_timeout: 6s
       lb_policy: ORIGINAL_DST_LB
       dns_lookup_family: V4_ONLY
+    - name: ext-authz
+      type: STRICT_DNS
+      http2_protocol_options: {}
+      load_assignment:
+        cluster_name: ext-authz
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: localhost
+                      port_value: 5010
+      # This timeout controls the initial TCP handshake timeout - not the timeout for the
+      # entire request.
+      connect_timeout: 0.25s
 cluster_manager: {}
 watchdog: {}
 admin:
