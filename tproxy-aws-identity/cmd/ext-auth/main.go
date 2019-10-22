@@ -29,6 +29,19 @@ func (a *AuthorizationServer) Check(ctx context.Context, req *auth.CheckRequest)
 	fmt.Printf("Source IP:port %s:%d\n", socketAddress.GetAddress(), socketAddress.GetPortValue())
 
 	process := findProcessSourcePort(socketAddress.GetPortValue())
+	if process == nil {
+		process = &Process{
+			User:        "Unknown",
+			Name:        "Unknown",
+			Pid:         "Unknown",
+			Exe:         "Unknown",
+			State:       "Unknown",
+			Ip:          "Unknown",
+			Port:        0,
+			ForeignIp:   "Unknown",
+			ForeignPort: 0,
+		}
+	}
 	fmt.Printf("Process name: %s \n", process.Name)
 	fmt.Printf("Process Exe: %s \n", process.Exe)
 	fmt.Printf("Process User: %s \n", process.User)
