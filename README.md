@@ -74,7 +74,11 @@ This example demonstrates how to use Envoy Proxy and Authz server to create a so
 
 More specifically, it integrates AWS EC2 instance and user metadata into the application identity. It seems clear to me that any serious workload identity solution needs to incorporate a cloud provider's information in order to be deployed seamlessly and provide useful information.
 
-### 1.10 [TCP-Proxy](./tcp-proxy)
+### 1.10 [Transparent Proxy (TPROXY) AWS Identity](./tproxy-aws-identity)
+
+WIP
+
+### 1.11 [TCP-Proxy](./tcp-proxy)
 
 This example demonstrates just a plain TCP Proxy. Interestingly I could not find official documentation on how to configure it, but managed to dig an example from a github issue.
 
