@@ -1,6 +1,6 @@
 # Tutorial
 
-**This was tested on Ubuntu 18.04**
+**This was tested on Ubuntu 18.04.3 LTS**
 
 This example uses the same container as the Envoy Forward Proxy example but instead of using IPTables to redirect packets, we set HTTP Proxy environment variables.
 
@@ -23,9 +23,9 @@ Make sure you are still able to access the Internet unhindered
 ```
 ubuntu$ curl -v www.cnn.com
 * Rebuilt URL to: www.cnn.com/
-*   Trying 151.101.189.67...
+*   Trying 151.101.41.67...
 * TCP_NODELAY set
-* Connected to www.cnn.com (151.101.189.67) port 80 (#0)
+* Connected to www.cnn.com (151.101.41.67) port 80 (#0)
 > GET / HTTP/1.1
 > Host: www.cnn.com
 > User-Agent: curl/7.58.0
@@ -38,12 +38,12 @@ ubuntu$ curl -v www.cnn.com
 < Cache-Control: public, max-age=600
 < Location: https://www.cnn.com/
 < Accept-Ranges: bytes
-< Date: Fri, 09 Aug 2019 15:39:41 GMT
+< Date: Tue, 18 Feb 2020 06:11:20 GMT
 < Via: 1.1 varnish
 < Connection: close
-< Set-Cookie: countryCode=US; Domain=.cnn.com; Path=/
-< Set-Cookie: geoData=san jose|CA|95123|US|NA|-700|broadband; Domain=.cnn.com; Path=/
-< X-Served-By: cache-pao17426-PAO
+< Set-Cookie: countryCode=US; Domain=.cnn.com; Path=/; SameSite=Lax
+< Set-Cookie: geoData=san jose|CA|95123|US|NA|-800|broadband; Domain=.cnn.com; Path=/; SameSite=Lax
+< X-Served-By: cache-sjc10048-SJC
 < X-Cache: HIT
 < X-Cache-Hits: 0
 <
@@ -60,7 +60,7 @@ source ./set_proxy.sh
 
 ## 4. HTTP Request
 
-Access to websites on ports 80 and 443 should go through the envoy proxy. Noticed the *x-envoy-upstream-service-time: 1* HTTP header
+Access to websites on ports 80 and 443 should go through the envoy proxy. Noticed the *x-envoy-upstream-service-time: 3* HTTP header
 
 ```
 ubuntu$ curl -v www.cnn.com
@@ -81,14 +81,14 @@ ubuntu$ curl -v www.cnn.com
 < cache-control: public, max-age=600
 < location: https://www.cnn.com/
 < accept-ranges: bytes
-< date: Thu, 15 Aug 2019 05:10:24 GMT
+< date: Tue, 18 Feb 2020 06:15:48 GMT
 < via: 1.1 varnish
-< set-cookie: countryCode=US; Domain=.cnn.com; Path=/
-< set-cookie: geoData=san jose|CA|95123|US|NA|-700|broadband; Domain=.cnn.com; Path=/
-< x-served-by: cache-pao17436-PAO
+< set-cookie: countryCode=US; Domain=.cnn.com; Path=/; SameSite=Lax
+< set-cookie: geoData=san jose|CA|95123|US|NA|-800|broadband; Domain=.cnn.com; Path=/; SameSite=Lax
+< x-served-by: cache-pao17446-PAO
 < x-cache: HIT
 < x-cache-hits: 0
-< x-envoy-upstream-service-time: 1
+< x-envoy-upstream-service-time: 3
 <
 * Connection #0 to host localhost left intact
 ```
@@ -98,9 +98,9 @@ ubuntu$ curl -v www.cnn.com
 Envoy Logs for successful run.
 
 ```
-2019-08-15 05:10:24.424][14][debug][main] [source/server/connection_handler_impl.cc:280] [C2] new connection
-[2019-08-15 05:10:24.424][14][debug][http] [source/common/http/conn_manager_impl.cc:246] [C2] new stream
-[2019-08-15 05:10:24.424][14][debug][http] [source/common/http/conn_manager_impl.cc:600] [C2][S7378197138069735321] request headers complete (end_stream=true):
+[2020-02-18 06:15:49.072][13][debug][conn_handler] [source/server/connection_handler_impl.cc:353] [C0] new connection
+[2020-02-18 06:15:49.073][13][debug][http] [source/common/http/conn_manager_impl.cc:263] [C0] new stream
+[2020-02-18 06:15:49.074][13][debug][http] [source/common/http/conn_manager_impl.cc:731] [C0][S12400113964677374341] request headers complete (end_stream=true):
 ':authority', 'www.cnn.com'
 ':path', '/'
 ':method', 'GET'
@@ -108,23 +108,22 @@ Envoy Logs for successful run.
 'accept', '*/*'
 'proxy-connection', 'Keep-Alive'
 
-[2019-08-15 05:10:24.424][14][debug][http] [source/common/http/conn_manager_impl.cc:1092] [C2][S7378197138069735321] request end stream
-[2019-08-15 05:10:24.424][14][debug][forward_proxy] [source/extensions/common/dynamic_forward_proxy/dns_cache_impl.cc:44] thread local lookup for host 'www.cnn.com'
-[2019-08-15 05:10:24.424][14][debug][forward_proxy] [source/extensions/common/dynamic_forward_proxy/dns_cache_impl.cc:58] thread local miss for host 'www.cnn.com', posting to main thread
-[2019-08-15 05:10:24.424][14][debug][forward_proxy] [source/extensions/filters/http/dynamic_forward_proxy/proxy_filter.cc:83] [C2][S7378197138069735321] waiting to load DNS cache entry
-[2019-08-15 05:10:24.424][7][debug][forward_proxy] [source/extensions/common/dynamic_forward_proxy/dns_cache_impl.cc:135] starting main thread resolve for host='www.cnn.com' dns='www.cnn.com' port='80'
-[2019-08-15 05:10:24.427][7][debug][forward_proxy] [source/extensions/common/dynamic_forward_proxy/dns_cache_impl.cc:148] main thread resolve complete for host 'www.cnn.com'. 1 results
-[2019-08-15 05:10:24.427][7][debug][forward_proxy] [source/extensions/common/dynamic_forward_proxy/dns_cache_impl.cc:181] host 'www.cnn.com' address has changed
-[2019-08-15 05:10:24.427][7][debug][upstream] [source/extensions/clusters/dynamic_forward_proxy/cluster.cc:84] adding new dfproxy cluster host 'www.cnn.com'
-[2019-08-15 05:10:24.427][7][debug][upstream] [source/common/upstream/cluster_manager_impl.cc:999] membership update for TLS cluster dynamic_forward_proxy_cluster added 1 removed 0
-[2019-08-15 05:10:24.427][7][debug][upstream] [source/common/upstream/cluster_manager_impl.cc:1006] re-creating local LB for TLS cluster dynamic_forward_proxy_cluster
-[2019-08-15 05:10:24.427][13][debug][upstream] [source/common/upstream/cluster_manager_impl.cc:999] membership update for TLS cluster dynamic_forward_proxy_cluster added 1 removed 0
-[2019-08-15 05:10:24.427][13][debug][upstream] [source/common/upstream/cluster_manager_impl.cc:1006] re-creating local LB for TLS cluster dynamic_forward_proxy_cluster
-[2019-08-15 05:10:24.427][14][debug][upstream] [source/common/upstream/cluster_manager_impl.cc:999] membership update for TLS cluster dynamic_forward_proxy_cluster added 1 removed 0
-[2019-08-15 05:10:24.427][14][debug][upstream] [source/common/upstream/cluster_manager_impl.cc:1006] re-creating local LB for TLS cluster dynamic_forward_proxy_cluster
-[2019-08-15 05:10:24.427][14][debug][forward_proxy] [source/extensions/filters/http/dynamic_forward_proxy/proxy_filter.cc:100] [C2][S7378197138069735321] load DNS cache complete, continuing
-[2019-08-15 05:10:24.427][14][debug][router] [source/common/router/router.cc:401] [C2][S7378197138069735321] cluster 'dynamic_forward_proxy_cluster' match for URL '/'
-[2019-08-15 05:10:24.427][14][debug][router] [source/common/router/router.cc:514] [C2][S7378197138069735321] router decoding headers:
+[2020-02-18 06:15:49.074][13][debug][http] [source/common/http/conn_manager_impl.cc:1276] [C0][S12400113964677374341] request end stream
+[2020-02-18 06:15:49.074][13][debug][forward_proxy] [source/extensions/common/dynamic_forward_proxy/dns_cache_impl.cc:47] thread local lookup for host 'www.cnn.com'
+[2020-02-18 06:15:49.074][13][debug][forward_proxy] [source/extensions/common/dynamic_forward_proxy/dns_cache_impl.cc:61] thread local miss for host 'www.cnn.com', posting to main thread
+[2020-02-18 06:15:49.074][7][debug][forward_proxy] [source/extensions/common/dynamic_forward_proxy/dns_cache_impl.cc:133] starting main thread resolve for host='www.cnn.com' dns='www.cnn.com' port='80'
+[2020-02-18 06:15:49.074][13][debug][forward_proxy] [source/extensions/filters/http/dynamic_forward_proxy/proxy_filter.cc:113] [C0][S12400113964677374341] waiting to load DNS cache entry
+[2020-02-18 06:15:49.078][7][debug][forward_proxy] [source/extensions/common/dynamic_forward_proxy/dns_cache_impl.cc:146] main thread resolve complete for host 'www.cnn.com'. 1 results
+[2020-02-18 06:15:49.078][7][debug][forward_proxy] [source/extensions/common/dynamic_forward_proxy/dns_cache_impl.cc:176] host 'www.cnn.com' address has changed
+[2020-02-18 06:15:49.078][7][debug][upstream] [source/extensions/clusters/dynamic_forward_proxy/cluster.cc:101] adding new dfproxy cluster host 'www.cnn.com'
+[2020-02-18 06:15:49.078][7][debug][upstream] [source/common/upstream/upstream_impl.cc:262] transport socket match, socket default selected for host with address 151.101.189.67:80
+[2020-02-18 06:15:49.078][7][debug][upstream] [source/common/upstream/cluster_manager_impl.cc:1084] membership update for TLS cluster dynamic_forward_proxy_cluster added 1 removed 0
+[2020-02-18 06:15:49.078][7][debug][upstream] [source/common/upstream/cluster_manager_impl.cc:1091] re-creating local LB for TLS cluster dynamic_forward_proxy_cluster
+[2020-02-18 06:15:49.079][13][debug][upstream] [source/common/upstream/cluster_manager_impl.cc:1084] membership update for TLS cluster dynamic_forward_proxy_cluster added 1 removed 0
+[2020-02-18 06:15:49.079][13][debug][upstream] [source/common/upstream/cluster_manager_impl.cc:1091] re-creating local LB for TLS cluster dynamic_forward_proxy_cluster
+[2020-02-18 06:15:49.079][13][debug][forward_proxy] [source/extensions/filters/http/dynamic_forward_proxy/proxy_filter.cc:130] [C0][S12400113964677374341] load DNS cache complete, continuing
+[2020-02-18 06:15:49.079][13][debug][router] [source/common/router/router.cc:474] [C0][S12400113964677374341] cluster 'dynamic_forward_proxy_cluster' match for URL '/'
+[2020-02-18 06:15:49.079][13][debug][router] [source/common/router/router.cc:614] [C0][S12400113964677374341] router decoding headers:
 ':authority', 'www.cnn.com'
 ':path', '/'
 ':method', 'GET'
@@ -132,21 +131,21 @@ Envoy Logs for successful run.
 'user-agent', 'curl/7.58.0'
 'accept', '*/*'
 'x-forwarded-proto', 'http'
-'x-request-id', '561e228d-2d09-49ae-93b5-f461ea48e476'
+'x-request-id', '51f89076-5172-464e-b3d9-d98605c17ecb'
 'x-envoy-expected-rq-timeout-ms', '15000'
 
-[2019-08-15 05:10:24.427][14][debug][pool] [source/common/http/http1/conn_pool.cc:88] creating a new connection
-[2019-08-15 05:10:24.427][14][debug][client] [source/common/http/codec_client.cc:26] [C3] connecting
-[2019-08-15 05:10:24.427][14][debug][connection] [source/common/network/connection_impl.cc:702] [C3] connecting to 151.101.189.67:80
-[2019-08-15 05:10:24.427][14][debug][connection] [source/common/network/connection_impl.cc:711] [C3] connection in progress
-[2019-08-15 05:10:24.427][14][debug][pool] [source/common/http/conn_pool_base.cc:20] queueing request due to no available connections
-[2019-08-15 05:10:24.428][14][debug][connection] [source/common/network/connection_impl.cc:550] [C3] connected
-[2019-08-15 05:10:24.428][14][debug][client] [source/common/http/codec_client.cc:64] [C3] connected
-[2019-08-15 05:10:24.428][14][debug][pool] [source/common/http/http1/conn_pool.cc:241] [C3] attaching to next request
-[2019-08-15 05:10:24.428][14][debug][router] [source/common/router/router.cc:1503] [C2][S7378197138069735321] pool ready
-[2019-08-15 05:10:24.429][14][debug][client] [source/common/http/codec_client.cc:95] [C3] response complete
-[2019-08-15 05:10:24.429][14][debug][router] [source/common/router/router.cc:994] [C2][S7378197138069735321] upstream headers complete: end_stream=true
-[2019-08-15 05:10:24.429][14][debug][http] [source/common/http/conn_manager_impl.cc:1359] [C2][S7378197138069735321] encoding headers via codec (end_stream=true):
+[2020-02-18 06:15:49.079][13][debug][pool] [source/common/http/http1/conn_pool.cc:95] creating a new connection
+[2020-02-18 06:15:49.079][13][debug][client] [source/common/http/codec_client.cc:34] [C1] connecting
+[2020-02-18 06:15:49.079][13][debug][connection] [source/common/network/connection_impl.cc:691] [C1] connecting to 151.101.189.67:80
+[2020-02-18 06:15:49.079][13][debug][connection] [source/common/network/connection_impl.cc:700] [C1] connection in progress
+[2020-02-18 06:15:49.079][13][debug][pool] [source/common/http/conn_pool_base.cc:55] queueing request due to no available connections
+[2020-02-18 06:15:49.081][13][debug][connection] [source/common/network/connection_impl.cc:563] [C1] connected
+[2020-02-18 06:15:49.081][13][debug][client] [source/common/http/codec_client.cc:72] [C1] connected
+[2020-02-18 06:15:49.081][13][debug][pool] [source/common/http/http1/conn_pool.cc:244] [C1] attaching to next request
+[2020-02-18 06:15:49.081][13][debug][router] [source/common/router/router.cc:1711] [C0][S12400113964677374341] pool ready
+[2020-02-18 06:15:49.083][13][debug][client] [source/common/http/codec_client.cc:104] [C1] response complete
+[2020-02-18 06:15:49.083][13][debug][router] [source/common/router/router.cc:1115] [C0][S12400113964677374341] upstream headers complete: end_stream=true
+[2020-02-18 06:15:49.083][13][debug][http] [source/common/http/conn_manager_impl.cc:1615] [C0][S12400113964677374341] encoding headers via codec (end_stream=true):
 ':status', '301'
 'server', 'envoy'
 'retry-after', '0'
@@ -154,25 +153,25 @@ Envoy Logs for successful run.
 'cache-control', 'public, max-age=600'
 'location', 'https://www.cnn.com/'
 'accept-ranges', 'bytes'
-'date', 'Thu, 15 Aug 2019 05:10:24 GMT'
+'date', 'Tue, 18 Feb 2020 06:15:48 GMT'
 'via', '1.1 varnish'
-'set-cookie', 'countryCode=US; Domain=.cnn.com; Path=/'
-'set-cookie', 'geoData=san jose|CA|95123|US|NA|-700|broadband; Domain=.cnn.com; Path=/'
-'x-served-by', 'cache-pao17436-PAO'
+'set-cookie', 'countryCode=US; Domain=.cnn.com; Path=/; SameSite=Lax'
+'set-cookie', 'geoData=san jose|CA|95123|US|NA|-800|broadband; Domain=.cnn.com; Path=/; SameSite=Lax'
+'x-served-by', 'cache-pao17446-PAO'
 'x-cache', 'HIT'
 'x-cache-hits', '0'
-'x-envoy-upstream-service-time', '1'
+'x-envoy-upstream-service-time', '3'
 
-[2019-08-15 05:10:24.429][14][debug][pool] [source/common/http/http1/conn_pool.cc:198] [C3] response complete
-[2019-08-15 05:10:24.429][14][debug][pool] [source/common/http/http1/conn_pool.cc:203] [C3] saw upstream close connection
-[2019-08-15 05:10:24.429][14][debug][connection] [source/common/network/connection_impl.cc:101] [C3] closing data_to_write=0 type=1
-[2019-08-15 05:10:24.429][14][debug][connection] [source/common/network/connection_impl.cc:188] [C3] closing socket: 1
-[2019-08-15 05:10:24.429][14][debug][client] [source/common/http/codec_client.cc:82] [C3] disconnect. resetting 0 pending requests
-[2019-08-15 05:10:24.429][14][debug][pool] [source/common/http/http1/conn_pool.cc:129] [C3] client disconnected, failure reason:
-[2019-08-15 05:10:24.429][14][debug][connection] [source/common/network/connection_impl.cc:518] [C3] remote close
-[2019-08-15 05:10:24.430][14][debug][connection] [source/common/network/connection_impl.cc:518] [C2] remote close
-[2019-08-15 05:10:24.430][14][debug][connection] [source/common/network/connection_impl.cc:188] [C2] closing socket: 0
-[2019-08-15 05:10:24.430][14][debug][main] [source/server/connection_handler_impl.cc:80] [C2] adding to cleanup list
+[2020-02-18 06:15:49.083][13][debug][pool] [source/common/http/http1/conn_pool.cc:201] [C1] response complete
+[2020-02-18 06:15:49.084][13][debug][pool] [source/common/http/http1/conn_pool.cc:206] [C1] saw upstream close connection
+[2020-02-18 06:15:49.084][13][debug][connection] [source/common/network/connection_impl.cc:101] [C1] closing data_to_write=0 type=1
+[2020-02-18 06:15:49.084][13][debug][connection] [source/common/network/connection_impl.cc:192] [C1] closing socket: 1
+[2020-02-18 06:15:49.084][13][debug][client] [source/common/http/codec_client.cc:91] [C1] disconnect. resetting 0 pending requests
+[2020-02-18 06:15:49.084][13][debug][pool] [source/common/http/http1/conn_pool.cc:136] [C1] client disconnected, failure reason:
+[2020-02-18 06:15:49.084][13][debug][connection] [source/common/network/connection_impl.cc:531] [C1] remote close
+[2020-02-18 06:15:49.085][13][debug][connection] [source/common/network/connection_impl.cc:531] [C0] remote close
+[2020-02-18 06:15:49.085][13][debug][connection] [source/common/network/connection_impl.cc:192] [C0] closing socket: 0
+[2020-02-18 06:15:49.085][13][debug][conn_handler] [source/server/connection_handler_impl.cc:86] [C0] adding to cleanup list
 ```
 
 ## 6. Cleaning
@@ -184,7 +183,7 @@ source ./unset_proxy.sh
 Go to the [forward-proxy](../forward-proxy) directory and execute
 
 ```
-./clean_envoy_proxy
+./clean_envoy_docker.sh
 ```
 
 
