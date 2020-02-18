@@ -8,6 +8,10 @@ I decide to compile each example as best as I could to help others going through
 
 Please be aware that all these examples were tested on **AWS Ubuntu 18.04**
 
+## Envoy Resources
+
+Started a new document on Envoy Resources such as [videos](resources.md)
+
 ## 1. Examples:
 
 ### 1.1 [Forward Proxy](./forward-proxy)
