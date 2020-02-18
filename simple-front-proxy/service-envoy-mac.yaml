@@ -11,7 +11,6 @@ static_resources:
         - filters:
             - name: envoy.http_connection_manager
               config:
-                idle_timeout: 1s
                 codec_type: auto
                 access_log:
                   - name: envoy.file_access_log
