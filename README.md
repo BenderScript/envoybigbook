@@ -6,11 +6,13 @@ Therefore it became clear that understanding Envoy and the IPTables associated w
 
 I decide to compile each example as best as I could to help others going through the same pains since documentation is at times fragmented and incomplete. 
 
-Please be aware that all these examples were tested on **AWS Ubuntu 18.04**
+Please be aware that all these examples were tested on **AWS Ubuntu 18.04.03**
 
 ## Envoy Resources
 
 Started a new document on Envoy Resources such as [videos](resources.md)
+
+*Notice: Updating Examples for Envoy 1.13.0*
 
 ## 1. Examples:
 
