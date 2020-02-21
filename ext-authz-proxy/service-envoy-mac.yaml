@@ -12,7 +12,6 @@ static_resources:
             - name: envoy.http_connection_manager
               # https://www.envoyproxy.io/docs/envoy/latest/api-v2/config/filter/network/http_connection_manager/v2/http_connection_manager.proto#envoy-api-field-config-filter-network-http-connection-manager-v2-httpconnectionmanager-use-remote-address
               config:
-                idle_timeout: 1s
                 use_remote_address: true
                 skip_xff_append: false
                 codec_type: auto
