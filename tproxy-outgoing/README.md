@@ -6,6 +6,31 @@ Transparent Proxy or TPROXY is a Linux Kernel feature without a lot of documenta
 
 This was tested on **AWS** Ubuntu 18.04
 
+## Pre-requisites
+
+Install Docker
+
+```bash
+sudo apt-get update
+sudo apt install docker.io
+sudo systemctl enable docker
+sudo groupadd docker
+sudo usermod -aG docker ${USER}
+```
+
+Logout and login
+
+```bash
+ubuntu$ docker run hello-world
+Unable to find image 'hello-world:latest' locally
+latest: Pulling from library/hello-world
+1b930d010525: Pull complete
+Digest: sha256:fc6a51919cfeb2e6763f62b6d9e8815acbf7cd2e476ea353743570610737b752
+Status: Downloaded newer image for hello-world:latest
+
+Hello from Docker!
+```
+
 
 ## 1. Network Diagram
 
