@@ -14,7 +14,7 @@ The HTTP Client (cURL), Envoy proxy and Web Server share the same host. cURL and
 
 ## 2 Custom Headers
 
-We will (theoretically) add and append two different headers. Customer header documentation is [here](https://www.envoyproxy.io/docs/envoy/v1.13.0/configuration/http/http_conn_man/headers#custom-request-response-headers)
+We will (theoretically) add and append two different headers. Custom header documentation is [here](https://www.envoyproxy.io/docs/envoy/v1.13.0/configuration/http/http_conn_man/headers#custom-request-response-headers)
 
 Notice that Envoy's custom header nomenclature can be [confusing](https://github.com/envoyproxy/envoy/issues/8127)
 
