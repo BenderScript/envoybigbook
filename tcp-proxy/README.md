@@ -36,18 +36,19 @@ curl -v localhost:4999
 > Host: localhost:4999
 > User-Agent: curl/7.54.0
 > Accept: */*
->
+> 
 < HTTP/1.1 200 OK
 < Server: gunicorn/19.9.0
-< Date: Thu, 19 Sep 2019 17:39:48 GMT
+< Date: Sat, 29 Feb 2020 06:01:58 GMT
 < Connection: keep-alive
 < Content-Type: text/html; charset=utf-8
 < Content-Length: 9593
 < Access-Control-Allow-Origin: *
 < Access-Control-Allow-Credentials: true
-<
+< 
 <!DOCTYPE html>
 <html lang="en">
+
 ```
 
 ## Envoy Logs
@@ -55,31 +56,27 @@ curl -v localhost:4999
 Envoy Logs from a successful run.
 
 ```
-[2019-09-19 17:39:39.543][8][debug][main] [source/server/server.cc:170] flushing stats
-[2019-09-19 17:39:44.537][8][debug][main] [source/server/server.cc:170] flushing stats
-[2019-09-19 17:39:48.513][14][debug][filter] [source/common/tcp_proxy/tcp_proxy.cc:201] [C2] new tcp proxy session
-[2019-09-19 17:39:48.513][14][debug][filter] [source/common/tcp_proxy/tcp_proxy.cc:344] [C2] Creating connection to cluster cluster1
-[2019-09-19 17:39:48.513][14][debug][pool] [source/common/tcp/conn_pool.cc:82] creating a new connection
-[2019-09-19 17:39:48.513][14][debug][pool] [source/common/tcp/conn_pool.cc:362] [C3] connecting
-[2019-09-19 17:39:48.513][14][debug][connection] [source/common/network/connection_impl.cc:704] [C3] connecting to 192.168.65.2:5000
-[2019-09-19 17:39:48.513][14][debug][connection] [source/common/network/connection_impl.cc:713] [C3] connection in progress
-[2019-09-19 17:39:48.513][14][debug][pool] [source/common/tcp/conn_pool.cc:108] queueing request due to no available connections
-[2019-09-19 17:39:48.513][14][debug][main] [source/server/connection_handler_impl.cc:280] [C2] new connection
-[2019-09-19 17:39:48.514][14][debug][connection] [source/common/network/connection_impl.cc:552] [C3] connected
-[2019-09-19 17:39:48.514][14][debug][pool] [source/common/tcp/conn_pool.cc:283] [C3] assigning connection
-[2019-09-19 17:39:48.514][14][debug][filter] [source/common/tcp_proxy/tcp_proxy.cc:544] TCP:onUpstreamEvent(), requestedServerName:
-[2019-09-19 17:39:48.542][14][debug][connection] [source/common/network/connection_impl.cc:520] [C3] remote close
-[2019-09-19 17:39:48.542][14][debug][connection] [source/common/network/connection_impl.cc:190] [C3] closing socket: 0
-[2019-09-19 17:39:48.542][14][debug][pool] [source/common/tcp/conn_pool.cc:123] [C3] client disconnected
-[2019-09-19 17:39:48.542][14][debug][connection] [source/common/network/connection_impl.cc:101] [C2] closing data_to_write=0 type=0
-[2019-09-19 17:39:48.542][14][debug][connection] [source/common/network/connection_impl.cc:190] [C2] closing socket: 1
-[2019-09-19 17:39:48.543][14][debug][main] [source/server/connection_handler_impl.cc:80] [C2] adding to cleanup list
-[2019-09-19 17:39:48.543][14][debug][pool] [source/common/tcp/conn_pool.cc:236] [C3] connection destroyed
-[2019-09-19 17:39:49.543][8][debug][main] [source/server/server.cc:170] flushing stats
-[2019-09-19 17:39:54.511][8][debug][main] [source/server/server.cc:170] flushing stats
-[2019-09-19T17:39:48.513Z] "- - -" 0 - 78 9832 30 - "-" "-" "-" "-" "192.168.65.2:5000"
-[2019-09-19 17:39:59.517][8][debug][main] [source/server/server.cc:170] flushing stats
-[2019-09-19 17:40:04.516][8][debug][main] [source/server/server.cc:170] flushing stats
+[2020-02-29 06:01:56.955][7][debug][upstream] [source/common/upstream/upstream_impl.cc:262] transport socket match, socket default selected for host with address 192.168.65.2:5000
+[2020-02-29 06:01:58.385][17][debug][filter] [source/common/tcp_proxy/tcp_proxy.cc:233] [C0] new tcp proxy session
+[2020-02-29 06:01:58.385][17][debug][filter] [source/common/tcp_proxy/tcp_proxy.cc:378] [C0] Creating connection to cluster cluster1
+[2020-02-29 06:01:58.385][17][debug][pool] [source/common/tcp/conn_pool.cc:83] creating a new connection
+[2020-02-29 06:01:58.385][17][debug][pool] [source/common/tcp/conn_pool.cc:364] [C1] connecting
+[2020-02-29 06:01:58.385][17][debug][connection] [source/common/network/connection_impl.cc:691] [C1] connecting to 192.168.65.2:5000
+[2020-02-29 06:01:58.385][17][debug][connection] [source/common/network/connection_impl.cc:700] [C1] connection in progress
+[2020-02-29 06:01:58.385][17][debug][pool] [source/common/tcp/conn_pool.cc:109] queueing request due to no available connections
+[2020-02-29 06:01:58.385][17][debug][conn_handler] [source/server/connection_handler_impl.cc:353] [C0] new connection
+[2020-02-29 06:01:58.386][17][debug][connection] [source/common/network/connection_impl.cc:563] [C1] connected
+[2020-02-29 06:01:58.386][17][debug][pool] [source/common/tcp/conn_pool.cc:285] [C1] assigning connection
+[2020-02-29 06:01:58.386][17][debug][filter] [source/common/tcp_proxy/tcp_proxy.cc:572] TCP:onUpstreamEvent(), requestedServerName: 
+[2020-02-29 06:01:58.518][17][debug][connection] [source/common/network/connection_impl.cc:531] [C1] remote close
+[2020-02-29 06:01:58.518][17][debug][connection] [source/common/network/connection_impl.cc:192] [C1] closing socket: 0
+[2020-02-29 06:01:58.518][17][debug][pool] [source/common/tcp/conn_pool.cc:124] [C1] client disconnected
+[2020-02-29 06:01:58.518][17][debug][connection] [source/common/network/connection_impl.cc:101] [C0] closing data_to_write=0 type=0
+[2020-02-29 06:01:58.518][17][debug][connection] [source/common/network/connection_impl.cc:192] [C0] closing socket: 1
+[2020-02-29 06:01:58.518][17][debug][conn_handler] [source/server/connection_handler_impl.cc:86] [C0] adding to cleanup list
+[2020-02-29 06:01:58.519][17][debug][pool] [source/common/tcp/conn_pool.cc:238] [C1] connection destroyed
+[2020-02-29T06:01:58.385Z] "- - -" 0 - 78 9832 134 - "-" "-" "-" "-" "192.168.65.2:5000"
+[2020-02-29 06:02:01.805][7][debug][main] [source/server/server.cc:174] flushing stats
 ```
 ## Cleaning
 
