@@ -86,6 +86,6 @@ WIP
 
 ### 1.11 [TCP-Proxy](./tcp-proxy)
 
-This example demonstrates just a plain TCP Proxy. Interestingly I could not find official documentation on how to configure it, but managed to dig an example from a github issue.
+This example demonstrates just a plain TCP Proxy. Interestingly I could not find official documentation on how to configure it, but managed to dig an example from a [github issue](https://github.com/envoyproxy/envoy/issues/2891).
 
 Even more interesting is that a simple TCP Proxy can be used for HTTP traffic if there is no interest in HTTP specific functionality. Based on the logs we can see the amount of processing is much lower and therefore performance should be much higher.
