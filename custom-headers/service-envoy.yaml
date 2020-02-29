@@ -16,10 +16,6 @@ static_resources:
               config:
                 idle_timeout: 1s
                 codec_type: auto
-                access_log:
-                  - name: envoy.file_access_log
-                    config:
-                      path: "/tmp/envoy-access-4999.log"
                 stat_prefix: ingress_http
                 route_config:
                   name: local_route

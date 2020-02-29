@@ -18,6 +18,21 @@ static_resources:
                 stat_prefix: ingress_http
                 route_config:
                   name: local_route
+                  request_headers_to_add:
+                    - header:
+                        key: "x-request-downstream-local"
+                        value: "%DOWNSTREAM_LOCAL_ADDRESS%"
+                    - header:
+                        key: "x-request-downstream-remote"
+                        value: "%DOWNSTREAM_REMOTE_ADDRESS%"
+                    - header:
+                        key: "x-request-upstream-remote"
+                        value: "%UPSTREAM_REMOTE_ADDRESS%"
+                      append: true
+                    - header:
+                        key: "x-request-start-time"
+                        value: "%START_TIME(%Y/%m/%dT%H:%M:%S%z %s)%"
+                      append: true
                   virtual_hosts:
                     - name: local_service
                       domains:
