@@ -31,12 +31,13 @@ Status: Downloaded newer image for hello-world:latest
 Hello from Docker!
 ```
 
-
 ## 1. Network Diagram
 
- 
-![You need to see the network diagram](./img/envoy_network.png)
-
+```text
+172.31.15.185 - Client
+172.31.13.100 - Envoy
+172.31.1.180 - Server
+```
 
 ## 2. Router Host
 
@@ -78,7 +79,7 @@ ubuntu    6638  0.0  0.0  14660  1004 pts/0    S+   19:49   0:00 grep --color=au
 
 #### 2.2.1 Socket Option SO_ORIGINAL_DST
 
-A small [python script](./original_destination.py) is included to demonstrate how proxies get the original IP:port from redirected connections. Assuming the IPTables rule below is in place, start this script as root instead of Envoy to get a deeper understanding of this socket option.
+A small [python script](../original-dst/original_destination.py) is included to demonstrate how proxies get the original IP:port from redirected connections. Assuming the IPTables rule below is in place, start this script as root instead of Envoy to get a deeper understanding of this socket option.
 
 ### 2.3 TPROXY
 
@@ -302,3 +303,56 @@ Envoy Logs for successful run.
 ```
 ./clean_web_docker.sh
 ```
+
+## 7 Custom Headers
+
+The following custom header configuration allow us to check which values are inserted by Envoy.
+
+```text
+                route_config:
+                  name: local_route
+                  request_headers_to_add:
+                    - header:
+                        key: "x-request-downstream-local"
+                        value: "%DOWNSTREAM_LOCAL_ADDRESS%"
+                    - header:
+                        key: "x-request-downstream-remote"
+                        value: "%DOWNSTREAM_REMOTE_ADDRESS%"
+                    - header:
+                        key: "x-request-upstream-remote"
+                        value: "%UPSTREAM_REMOTE_ADDRESS%"
+                      append: true
+                    - header:
+                        key: "x-request-start-time"
+                        value: "%START_TIME(%Y/%m/%dT%H:%M:%S%z %s)%"
+                      append: true
+```
+
+We have to run _simple-go-server_ at port 80 instead of the previous docker web server so HTTP headers are printed to the console
+
+```text
+ubuntu$ sudo ./simple-go-server -listen-addr :80
+http: 2020/02/29 05:14:32 Simple go server
+http: 2020/02/29 05:14:32 Version:
+http: 2020/02/29 05:14:32 GitTag:
+http: 2020/02/29 05:14:32 GitCommit:
+http: 2020/02/29 05:14:32 GitTreeState:
+http: 2020/02/29 05:14:32 Server is starting...
+http: 2020/02/29 05:14:32 Server is ready to handle requests at :80
+
+HTTP Headers Received:
+======================
+User-Agent                              : curl/7.58.0
+X-Request-Start-Time                    : 2020/02/29T05:14:39+0000 1582953279
+Content-Length                          : 0
+Accept                                  : */*
+X-Forwarded-Proto                       : http
+X-Request-Id                            : 22704ee0-1f42-4a62-9031-2d27a525a727
+X-Envoy-Expected-Rq-Timeout-Ms          : 15000
+X-Request-Downstream-Local              : 172.31.1.180:80
+X-Request-Downstream-Remote             : 172.31.15.185:58080
+
+http: 2020/02/29 05:14:39 22704ee0-1f42-4a62-9031-2d27a525a727 GET / 172.31.13.100:56678 curl/7.58.0
+```
+
+Notice that upstream headers values were omitted.
