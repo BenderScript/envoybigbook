@@ -1,4 +1,4 @@
-FROM envoyproxy/envoy:v1.11.1
+FROM envoyproxy/envoy:v1.13.0
 
 EXPOSE 4999
 EXPOSE 19000
